@@ -9,12 +9,23 @@ Class {
 		'name',
 		'students'
 	],
-	#category : #AmmoliteMagenta
+	#category : #'AmmoliteMagenta-model'
 }
 
 { #category : #adding }
 AMGroup >> addStudent: anAMStudent [
 	self students add: anAMStudent
+]
+
+{ #category : #accessing }
+AMGroup >> id [
+
+	^ id
+]
+
+{ #category : #accessing }
+AMGroup >> id: anInteger [ 
+	id := anInteger
 ]
 
 { #category : #adding }

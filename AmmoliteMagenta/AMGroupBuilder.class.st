@@ -4,7 +4,7 @@ I randomly build groups of students, given a number of groups and a list of stud
 Class {
 	#name : #AMGroupBuilder,
 	#superclass : #Object,
-	#category : #AmmoliteMagenta
+	#category : #'AmmoliteMagenta-model'
 }
 
 { #category : #'api - building' }
@@ -12,7 +12,11 @@ AMGroupBuilder >> buildGroups: n forStudents: studentList [
 
 	| groups studentStack currentGroup |
 	groups := LinkedList new.
-	n timesRepeat: [ groups add: AMGroup new ].
+	1 to: n do: [ :i | 
+		| grp |
+		grp := AMGroup new.
+		grp id: i.
+		groups add: grp ].
 	"groups lastLink nextLink: groups firstLink."
 
 	studentStack := Stack new.

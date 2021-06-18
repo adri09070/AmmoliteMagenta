@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'name'
 	],
-	#category : #AmmoliteMagenta
+	#category : #'AmmoliteMagenta-model'
 }
 
 { #category : #accessing }
