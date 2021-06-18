@@ -21,3 +21,10 @@ AMStudent >> name: anObject [
 
 	name := anObject
 ]
+
+{ #category : #printing }
+AMStudent >> printOn: aStream [
+	aStream << 'Student:'.
+	aStream space.
+	aStream << self name
+]

@@ -17,10 +17,9 @@ AMGroupBuilder >> buildGroups: n forStudents: studentList [
 		grp := AMGroup new.
 		grp id: i.
 		groups add: grp ].
-	"groups lastLink nextLink: groups firstLink."
 
 	studentStack := Stack new.
-	studentList do: [ :name | 
+	studentList reverseDo: [ :name | 
 		studentStack push: (AMStudent new name: name) ].
 
 	currentGroup := groups firstLink.
