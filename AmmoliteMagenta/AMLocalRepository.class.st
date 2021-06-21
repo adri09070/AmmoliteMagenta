@@ -9,10 +9,20 @@ Class {
 	#category : #'AmmoliteMagenta-model'
 }
 
-{ #category : #abstract }
-AMLocalRepository >> allFileReference: aFileReference [
+{ #category : #api }
+AMLocalRepository class >> readAllPromotions [
 
-	^ self localDirectory contents
+	| repository |
+	repository := self new.
+	^ repository allFileReferences collect: [ :f | 
+		  f path basenameWithoutExtension
+		  -> (repository readFileReference: f) ]
+]
+
+{ #category : #reading }
+AMLocalRepository >> allFileReferences [
+
+	^ self localDirectory children
 ]
 
 { #category : #origins }
@@ -23,8 +33,9 @@ AMLocalRepository >> localDirectory [
 	^dir
 ]
 
-{ #category : #abstract }
+{ #category : #reading }
 AMLocalRepository >> readFileReference: aFileReference [
 
-	^ aFileReference contents splitOn: OSPlatform current lineEnding
+	^ aFileReference binaryReadStream contents asString splitOn:
+		  OSPlatform current lineEnding
 ]
