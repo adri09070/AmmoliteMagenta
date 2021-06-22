@@ -20,5 +20,5 @@ AMStudentTest >> testPrintOn [
 	|str|
 	str := WriteStream  on: String new.
 	student printOn: str.
-	self assert: str contents equals: 'Student: ', student name
+	self assert: str contents equals: student name
 ]
