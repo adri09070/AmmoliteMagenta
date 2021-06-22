@@ -12,6 +12,38 @@ Class {
 	#category : #'AmmoliteMagenta-model'
 }
 
+{ #category : #api }
+AMStudent class >> markerL [
+
+	^ $-
+]
+
+{ #category : #api }
+AMStudent class >> markerP [
+
+	^ $+
+]
+
+{ #category : #api }
+AMStudent class >> markers [
+
+	^ Array with: self markerP with: self markerL
+]
+
+{ #category : #reading }
+AMStudent class >> readFromString: aString [
+
+	| student workingString endIndex |
+	student := self new.
+	workingString := aString trimBoth.
+	endIndex := workingString size.
+	(self markers includes: workingString last) ifTrue: [ 
+		student marker: workingString last.
+		endIndex := workingString size - 1 ].
+	student name: (workingString copyFrom: 1 to: endIndex) trimBoth.
+	^ student
+]
+
 { #category : #accessing }
 AMStudent >> isPresent [
 

@@ -14,23 +14,21 @@ Class {
 }
 
 { #category : #'instance creation' }
+AMPromotion class >> readFromAssociation: association [
+
+	| promotion |
+	promotion := self new.
+	promotion name: association key.
+	promotion students: (association value collect: [ :string | 
+			 AMStudent readFromString: string trimBoth ]).
+	^ promotion
+]
+
+{ #category : #'instance creation' }
 AMPromotion class >> readFromDisk [
 
 	^ AMLocalRepository readAllPromotions collect: [ :association | 
-		  | promotion |
-		  promotion := self new.
-		  promotion name: association key.
-		  promotion students: (association value collect: [ :string | 
-				   | workingString student endIndex |
-				   workingString := string trimBoth.
-				   student := AMStudent new.
-				   endIndex := workingString size.
-				   (#( $+ $- ) includes: workingString last) ifTrue: [ 
-					   student marker: workingString last.
-					   endIndex := workingString size - 1 ].
-				   student name: (workingString copyFrom: 1 to: endIndex).
-				   student ]).
-		  promotion ]
+		  self newFrom: association ]
 ]
 
 { #category : #accessing }

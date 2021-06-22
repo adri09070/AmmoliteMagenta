@@ -44,9 +44,39 @@ AMStudentTest >> testMarkerP [
 ]
 
 { #category : #tests }
+AMStudentTest >> testMarkers [
+
+	self
+		assertCollection: AMStudent markers
+		equals: (Array with: AMStudent markerP with: AMStudent markerL)
+]
+
+{ #category : #tests }
 AMStudentTest >> testPrintOn [
 	|str|
 	str := WriteStream  on: String new.
 	student printOn: str.
 	self assert: str contents equals: student name
+]
+
+{ #category : #tests }
+AMStudentTest >> testReadFromStringLMarker [
+
+	student := AMStudent readFromString: ' Karl-Marx - '.
+	self assert: student name equals: 'Karl-Marx'.
+	self assert: student markerL
+]
+
+{ #category : #tests }
+AMStudentTest >> testReadFromStringNoMarker [
+	self assert: (AMStudent readFromString: ' Karl Marx ') name equals: 'Karl Marx'
+	
+]
+
+{ #category : #tests }
+AMStudentTest >> testReadFromStringPMarker [
+
+	student := AMStudent readFromString: ' Karl Marx + '.
+	self assert: student name equals: 'Karl Marx'.
+	self assert: student markerP
 ]
