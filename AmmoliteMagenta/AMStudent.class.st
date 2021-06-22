@@ -36,6 +36,18 @@ AMStudent >> marker: anObject [
 	marker := anObject
 ]
 
+{ #category : #api }
+AMStudent >> markerL [
+
+	^ marker = $-
+]
+
+{ #category : #api }
+AMStudent >> markerP [
+
+	^ marker = $+
+]
+
 { #category : #accessing }
 AMStudent >> name [
 
