@@ -18,7 +18,7 @@ AMGroupBuilderTest >> setUp [
 AMGroupBuilderTest >> testBuildGroupsIds [
 
 	| groups |
-	groups := builder buildGroups: 5 forStudents: ($a to: $z).
+	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e| e asString]).
 	self assert: groups first id equals: 1.
 	self assert: groups second id equals: 2.
 	self assert: groups third id equals: 3.
@@ -48,6 +48,6 @@ AMGroupBuilderTest >> testBuildGroupsRepartition [
 { #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsSize [
 	|groups|
-	groups := builder buildGroups: 5 forStudents: ($a to: $z).
+	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e| e asString]).
 	self assert: groups size equals: 5
 ]

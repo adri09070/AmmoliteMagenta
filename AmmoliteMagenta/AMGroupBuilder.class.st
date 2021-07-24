@@ -20,7 +20,7 @@ AMGroupBuilder >> buildGroups: n forStudents: studentList [
 
 	studentStack := Stack new.
 	studentList reverseDo: [ :name | 
-		studentStack push: (AMStudent new name: name) ].
+		studentStack push: (AMStudent readFromString: name) ].
 
 	currentGroup := groups firstLink.
 	[ studentStack isEmpty ] whileFalse: [ 
