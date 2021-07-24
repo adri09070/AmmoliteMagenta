@@ -28,7 +28,7 @@ AMPromotion class >> readFromAssociation: association [
 AMPromotion class >> readFromDisk [
 
 	^ AMLocalRepository readAllPromotions collect: [ :association | 
-		  self newFrom: association ]
+		  self readFromAssociation: association ]
 ]
 
 { #category : #accessing }
