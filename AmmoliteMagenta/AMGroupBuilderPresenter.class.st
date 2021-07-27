@@ -97,9 +97,15 @@ AMGroupBuilderPresenter >> initializeToolbar [
 			 yourself).
 	controls addItem: (SpToolbarButtonPresenter new
 			 label: 'Generate';
-			 icon: (self iconNamed: #forward);
+			 icon: (self iconNamed: #group);
 			 help: 'Generate student groups';
 			 action: [ self inform: 'Ok' ];
+			 yourself).
+	controls addItem: (SpToolbarButtonPresenter new
+			 label: 'Pick';
+			 icon: (self iconNamed: #smallNew);
+			 help: 'Picks a random student in the selected promotion';
+			 action: [ self pickRandomStudent ];
 			 yourself).
 	controls addItem: (SpToolbarButtonPresenter new
 			 label: 'Exit';
@@ -116,8 +122,35 @@ AMGroupBuilderPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter title: 'Ammolite Magenta'
 ]
 
+{ #category : #actions }
+AMGroupBuilderPresenter >> pickRandomStudent [
+	|promotion|
+	promotion := classes selectedItem.
+	promotion  ifNil:[
+		self warning: 'No promotion selected' relativeTo: classes.
+		^self].
+	output text: promotion pickRandomStudent printString
+	
+]
+
 { #category : #updating }
 AMGroupBuilderPresenter >> updateStudents: class [
 
 	students items: class students
+]
+
+{ #category : #ui }
+AMGroupBuilderPresenter >> warning: aString relativeTo: aPresenter [ 
+	self newPopover
+		addStyle: 'error';
+		relativeTo: aPresenter;
+		position: SpPopoverPosition top;
+		presenter: (SpPresenter new
+				 layout: (SpBoxLayout newTopToBottom
+						  borderWidth: 2;
+						  spacing: 0;
+						  add: (self newLabel label: aString);
+						  yourself);
+				 yourself);
+		popup
 ]

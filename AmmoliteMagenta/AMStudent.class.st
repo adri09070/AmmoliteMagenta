@@ -44,6 +44,24 @@ AMStudent class >> readFromString: aString [
 	^ student
 ]
 
+{ #category : #comparing }
+AMStudent >> = anObject [
+
+	"Answer whether the receiver and anObject represent the same object."
+
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	^ name = anObject name and: [ marker = anObject marker ]
+]
+
+{ #category : #comparing }
+AMStudent >> hash [
+
+	"Answer an integer value that is related to the identity of the receiver."
+
+	^ name hash bitXor: marker hash
+]
+
 { #category : #accessing }
 AMStudent >> isPresent [
 

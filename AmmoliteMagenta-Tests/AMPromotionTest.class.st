@@ -5,6 +5,17 @@ Class {
 }
 
 { #category : #tests }
+AMPromotionTest >> testPickRandomStudent [
+	|promotion student|	
+	promotion := AMPromotion readFromDisk first.
+	student := promotion pickRandomStudent.
+	
+	self deny: student identicalTo: promotion pickRandomStudent.
+	self deny: student equals: AMPromotion readFromDisk first pickRandomStudent
+	
+]
+
+{ #category : #tests }
 AMPromotionTest >> testReadFromAssociation [
 	|data promotion student|
 	data :=  'test' -> { 'Jean-Pierre Screugneugneu -'. 'Bob Madeleine +'. 'Lolo Saint-Martin' }.

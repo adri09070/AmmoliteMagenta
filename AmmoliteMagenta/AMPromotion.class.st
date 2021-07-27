@@ -43,6 +43,11 @@ AMPromotion >> name: anObject [
 	name := anObject
 ]
 
+{ #category : #API }
+AMPromotion >> pickRandomStudent [
+	^self students atRandom
+]
+
 { #category : #accessing }
 AMPromotion >> size [
 	^self students size
