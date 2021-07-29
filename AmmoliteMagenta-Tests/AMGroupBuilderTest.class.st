@@ -7,11 +7,51 @@ Class {
 	#category : #'AmmoliteMagenta-Tests'
 }
 
+{ #category : #helpers }
+AMGroupBuilderTest >> groupListWithMarkers [
+
+	^{'a+'. 'b-'. 'c'. 'd+'. 'e-'. 'f'}
+]
+
 { #category : #running }
 AMGroupBuilderTest >> setUp [
 	super setUp.
 	
 	builder := AMGroupBuilder new 
+]
+
+{ #category : #helpers }
+AMGroupBuilderTest >> studentGroup [
+
+	^ { 
+		  (AMStudent readFromString: 'a+').
+		  (AMStudent readFromString: 'b-').
+		  (AMStudent readFromString: 'c') }
+]
+
+{ #category : #tests }
+AMGroupBuilderTest >> testBuildGroupsAreShuffled [
+
+	| groups g1 g2 g3 |
+	1/0.
+	groups := builder
+		          buildGroups: 3
+		          forStudents: self groupListWithMarkers.
+
+	self assert: groups size equals: 3.
+	
+	g1 := groups first students.
+	g2 := groups second students.
+	g3 := groups third students.
+
+	self assert: (g1 select: [ :s | s markerP ]) size equals: 1.
+	self assert: (g2 select: [ :s | s markerP ]) size equals: 1.
+	self assert: (g1 select: [ :s | s markerL ]) size equals: 1.
+	self assert: (g2 select: [ :s | s markerL ]) size equals: 1.
+	
+	self assert: (g3 select: [ :s | s markerP or:[s markerL] ]) size equals: 0
+
+
 ]
 
 { #category : #tests }
@@ -28,21 +68,18 @@ AMGroupBuilderTest >> testBuildGroupsIds [
 
 { #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsRepartition [
-	|groups testBlock|
-	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:letter| letter asString]).
-	testBlock := [ :names :group :size|
-		self assert: group students size equals: size.
-		self assert: group students first name equals: names first.
-		self assert: group students second name equals: names second.
-		self assert: group students third name equals: names third.
-		self assert: group students fourth name equals: names fourth.
-		self assert: group students fifth name equals: names fifth ].
-	
-	testBlock value: #('a' 'f' 'k' 'p' 'u' 'z') value: groups first value: 6.
-	testBlock value: #('b' 'g' 'l' 'q' 'v') value: groups second value: 5.
-	testBlock value: #('c' 'h' 'm' 'r' 'w') value: groups third value: 5.
-	testBlock value: #('d' 'i' 'n' 's' 'x') value: groups fourth value: 5.
-	testBlock value: #('e' 'j' 'o' 't' 'y') value: groups fifth value: 5
+
+	| groups |
+	groups := builder
+		          buildGroups: 5
+		          forStudents:
+		          (($a to: $z) collect: [ :letter | letter asString ]).
+
+	self assert: groups first students size equals: 6.
+	self assert: groups second students size equals: 5.
+	self assert: groups third students size equals: 5.
+	self assert: groups fourth students size equals: 5.
+	self assert: groups fifth students size equals: 5
 ]
 
 { #category : #tests }
@@ -50,4 +87,70 @@ AMGroupBuilderTest >> testBuildGroupsSize [
 	|groups|
 	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e| e asString]).
 	self assert: groups size equals: 5
+]
+
+{ #category : #tests }
+AMGroupBuilderTest >> testBuildGroupsWithMarkersRepartition [
+
+	| groups g1 g2 g3 |
+	groups := builder
+		          buildGroups: 3
+		          forStudents: self groupListWithMarkers.
+
+	self assert: groups size equals: 3.
+	
+	g1 := groups first students.
+	g2 := groups second students.
+	g3 := groups third students.
+
+	self assert: (g1 select: [ :s | s markerP ]) size equals: 1.
+	self assert: (g2 select: [ :s | s markerP ]) size equals: 1.
+	self assert: (g1 select: [ :s | s markerL ]) size equals: 0.
+	self assert: (g2 select: [ :s | s markerL ]) size equals: 1.
+	self assert: (g3 select: [ :s | s markerL ]) size equals: 1.
+	self assert: (g3 select: [ :s | s markerP or:[s markerL] ]) size equals: 1
+
+
+]
+
+{ #category : #tests }
+AMGroupBuilderTest >> testLStackFrom [
+
+	| students s |
+	students := self studentGroup.
+	s := builder lStackFrom: students.	
+	self assert: s top equals: students second.
+	self assert: s size equals: 1
+]
+
+{ #category : #tests }
+AMGroupBuilderTest >> testNStackFrom [
+
+	| students s |
+	students := self studentGroup.
+	s := builder nStackFrom: students.
+	self assert: s top equals: students last.
+	self assert: s size equals: 1
+]
+
+{ #category : #tests }
+AMGroupBuilderTest >> testPStackFrom [
+
+	| students s |
+	students := self studentGroup.
+	s := builder pStackFrom: students.
+	self assert: s top equals: students first.
+	self assert: s size equals: 1
+]
+
+{ #category : #tests }
+AMGroupBuilderTest >> testStackFrom [
+
+	|s|
+	s := builder stackFrom: #(1 2 3).
+	self assert: s class equals: Stack.
+	self assert: s pop equals: 3.
+	self assert: s pop equals: 2.
+	self assert: s pop equals: 1.
+	self assert: s isEmpty 
 ]
