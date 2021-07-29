@@ -154,6 +154,11 @@ AMGroupBuilderTest >> testPStackFrom [
 ]
 
 { #category : #tests }
+AMGroupBuilderTest >> testStackFillGroups [
+	1/0
+]
+
+{ #category : #tests }
 AMGroupBuilderTest >> testStackFrom [
 
 	|s|
