@@ -134,6 +134,16 @@ AMGroupBuilderTest >> testNStackFrom [
 ]
 
 { #category : #tests }
+AMGroupBuilderTest >> testNewGroups [
+
+	| groups |
+	groups := builder newGroups: 3.
+	self assert: groups first nextLink equals: groups second.
+	self assert: groups second nextLink equals: groups third.
+	self assert: groups third nextLink equals: groups first
+]
+
+{ #category : #tests }
 AMGroupBuilderTest >> testPStackFrom [
 
 	| students s |

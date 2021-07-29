@@ -11,14 +11,7 @@ Class {
 AMGroupBuilder >> buildGroups: n forStudents: studentList [
 
 	| groups students pStack lStack nStack currentGroup |
-	groups := OrderedCollection new.
-	1 to: n do: [ :i | 
-		| grp  |
-		grp := AMGroup new asLink.
-		grp value id: i.	
-		groups add: grp.
-		i > 1 ifTrue: [ (groups at: i - 1) nextLink: grp ] ].
-	groups last nextLink: groups first.
+	groups := self newGroups: n.
 
 	students := studentList shuffled collect: [ :name | 
 		            AMStudent readFromString: name ].
@@ -46,6 +39,21 @@ AMGroupBuilder >> nStackFrom: students [
 
 	^ self stackFrom:
 		  (students reject: [ :s | s markerP or: [ s markerL ] ])
+]
+
+{ #category : #private }
+AMGroupBuilder >> newGroups: n [
+
+	| groups |
+	groups := OrderedCollection new.
+	1 to: n do: [ :i | 
+		| grp |
+		grp := AMGroup new asLink.
+		grp value id: i.
+		groups add: grp.
+		i > 1 ifTrue: [ (groups at: i - 1) nextLink: grp ] ].
+	groups last nextLink: groups first.
+	^ groups
 ]
 
 { #category : #private }
