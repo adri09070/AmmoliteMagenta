@@ -9,7 +9,8 @@ Class {
 		'classes',
 		'students',
 		'controls',
-		'output'
+		'output',
+		'nbGroupSelection'
 	],
 	#category : #'AmmoliteMagenta-presenters'
 }
@@ -41,15 +42,46 @@ AMGroupBuilderPresenter class >> example [
 
 { #category : #specs }
 AMGroupBuilderPresenter class >> outputLayout [
-	^SpBoxLayout newTopToBottom
-		add: #controls	expand: false fill: false padding: 5;
-		add: #output;
-		yourself
+
+	^ SpBoxLayout newTopToBottom
+		  add: (SpBoxLayout newLeftToRight  add: #controls  expand: false fill: false padding: 5;
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Groups' withConstraints: [ :constraints | constraints width: 50 ];
+						    add: #nbGroupSelection expand: false fill: false padding: 5; 
+						    yourself) withConstraints: [ :constraints | constraints width: 60 ];
+				   yourself)  withConstraints: [ :constraints | constraints height: self buttonHeight * 2 ];
+					
+		  add: #output;
+		  yourself
 ]
 
 { #category : #updating }
 AMGroupBuilderPresenter >> clearGroups [
 	self flag: 'todo'
+]
+
+{ #category : #displaying }
+AMGroupBuilderPresenter >> displayGroups: groups [
+
+	| str |
+	str := WriteStream on: Text new.
+	groups do: [ :g | g textPrintOn: str ].
+	output text: str contents
+]
+
+{ #category : #actions }
+AMGroupBuilderPresenter >> generate [
+
+	| nbGroups studentsSelection groups |
+	self isPromotionSelected ifFalse: [ ^ self ].
+	nbGroups := nbGroupSelection selectedItem.
+
+	studentsSelection := classes selectedItem students select: [ :s | 
+		                     s isPresent ].
+	groups := AMGroupBuilder new
+		          buildGroups: nbGroups
+		          forStudents: studentsSelection.
+	self displayGroups: groups
 ]
 
 { #category : #initialization }
@@ -74,8 +106,11 @@ AMGroupBuilderPresenter >> initializePresenters [
 	
 	controls := self newToolbar.
 	self initializeToolbar.
+	nbGroupSelection := self newDropList.
+	nbGroupSelection items: (2 to: 12) asArray.
 	
 	output := self newText.
+	output beNotEditable.
 	
 	classes items: AMPromotion readFromDisk 
 ]
@@ -84,23 +119,18 @@ AMGroupBuilderPresenter >> initializePresenters [
 AMGroupBuilderPresenter >> initializeToolbar [
 
 	controls addItem: (SpToolbarButtonPresenter new
+			 label: 'Exit';
+			 icon: (self iconNamed: #smallQuit);
+			 help: 'Exits program';
+			 action: [ self exit ];
+			 yourself).
+	controls addItem: (SpToolbarButtonPresenter new
 			 label: 'Reload';
 			 icon: (self iconNamed: #refresh);
 			 help: 'Reload data from disk';
-			 action: [ self inform: 'Ok' ];
+			 action: [ self reload ];
 			 yourself).
-	controls addItem: (SpToolbarButtonPresenter new
-			 label: 'Reshuffle';
-			 icon: (self iconNamed: #smallUpdate);
-			 help: 'Reshuffle the student list';
-			 action: [ self inform: 'Ok' ];
-			 yourself).
-	controls addItem: (SpToolbarButtonPresenter new
-			 label: 'Generate';
-			 icon: (self iconNamed: #group);
-			 help: 'Generate student groups';
-			 action: [ self inform: 'Ok' ];
-			 yourself).
+	
 	controls addItem: (SpToolbarButtonPresenter new
 			 label: 'Pick';
 			 icon: (self iconNamed: #smallNew);
@@ -108,10 +138,10 @@ AMGroupBuilderPresenter >> initializeToolbar [
 			 action: [ self pickRandomStudent ];
 			 yourself).
 	controls addItem: (SpToolbarButtonPresenter new
-			 label: 'Exit';
-			 icon: (self iconNamed: #smallQuit);
-			 help: 'Exits program';
-			 action: [ self inform: 'Ok' ];
+			 label: 'Generate';
+			 icon: (self iconNamed: #group);
+			 help: 'Generate student groups';
+			 action: [ self generate ];
 			 yourself)
 ]
 
@@ -122,15 +152,22 @@ AMGroupBuilderPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter title: 'Ammolite Magenta'
 ]
 
+{ #category : #testing }
+AMGroupBuilderPresenter >> isPromotionSelected [
+
+	| promotion |
+	promotion := classes selectedItem.
+	promotion ifNil: [ 
+		self warning: 'No promotion selected' relativeTo: classes.
+		^ false ].
+	^ true
+]
+
 { #category : #actions }
 AMGroupBuilderPresenter >> pickRandomStudent [
-	|promotion|
-	promotion := classes selectedItem.
-	promotion  ifNil:[
-		self warning: 'No promotion selected' relativeTo: classes.
-		^self].
-	output text: promotion pickRandomStudent printString
-	
+
+	self isPromotionSelected ifFalse: [ ^ self ].
+	output text: classes selectedItem pickRandomStudent printString
 ]
 
 { #category : #updating }

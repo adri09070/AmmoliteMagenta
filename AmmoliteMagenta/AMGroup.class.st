@@ -34,3 +34,16 @@ AMGroup >> students [
 	^ students ifNil: [ 
 		  students := SortedCollection sortBlock: [ :a :b | a name < b name ] ]
 ]
+
+{ #category : #printing }
+AMGroup >> textPrintOn: stream [
+
+	stream << ('Groupe ' , id printString) asText allBold.
+	stream cr.
+	students do: [ :s | 
+		s printOn: stream.
+		stream << ','.
+		stream space ].
+	stream cr.
+	stream cr
+]

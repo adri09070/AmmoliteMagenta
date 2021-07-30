@@ -13,8 +13,7 @@ AMGroupBuilder >> buildGroups: n forStudents: studentList [
 	| groups students pStack lStack nStack currentGroup |
 	groups := self newGroups: n.
 
-	students := studentList shuffled collect: [ :name | 
-		            AMStudent readFromString: name ].
+	students := studentList shuffled.
 
 	pStack := (self pStackFrom: students).
 	lStack := (self lStackFrom: students).

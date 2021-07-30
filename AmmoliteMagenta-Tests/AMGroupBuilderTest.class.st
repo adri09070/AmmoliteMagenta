@@ -10,7 +10,7 @@ Class {
 { #category : #helpers }
 AMGroupBuilderTest >> groupListWithMarkers [
 
-	^{'a+'. 'b-'. 'c'. 'd+'. 'e-'. 'f'}
+	^{'a+'. 'b-'. 'c'. 'd+'. 'e-'. 'f'} collect: [:name|AMStudent readFromString: name]
 ]
 
 { #category : #running }
@@ -58,7 +58,7 @@ AMGroupBuilderTest >> testBuildGroupsAreShuffled [
 AMGroupBuilderTest >> testBuildGroupsIds [
 
 	| groups |
-	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e| e asString]).
+	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e|  AMStudent readFromString: e asString]).
 	self assert: groups first id equals: 1.
 	self assert: groups second id equals: 2.
 	self assert: groups third id equals: 3.
@@ -73,7 +73,7 @@ AMGroupBuilderTest >> testBuildGroupsRepartition [
 	groups := builder
 		          buildGroups: 5
 		          forStudents:
-		          (($a to: $z) collect: [ :letter | letter asString ]).
+		          (($a to: $z) collect: [ :letter |  AMStudent readFromString: letter asString ]).
 
 	self assert: groups first students size equals: 6.
 	self assert: groups second students size equals: 5.
@@ -85,7 +85,7 @@ AMGroupBuilderTest >> testBuildGroupsRepartition [
 { #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsSize [
 	|groups|
-	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e| e asString]).
+	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e|  AMStudent readFromString: e asString]).
 	self assert: groups size equals: 5
 ]
 
