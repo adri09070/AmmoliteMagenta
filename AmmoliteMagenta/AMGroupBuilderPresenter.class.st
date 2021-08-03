@@ -74,6 +74,15 @@ AMGroupBuilderPresenter >> exit [
 	Smalltalk snapshot: true andQuit: true 
 ]
 
+{ #category : #export }
+AMGroupBuilderPresenter >> exportGroups: groups [
+
+	| str |
+	str := self newGeneratedGroupFileReference writeStream.
+	groups do: [ :g | g textPrintOn: str ].
+	str close
+]
+
 { #category : #actions }
 AMGroupBuilderPresenter >> generate [
 
@@ -86,7 +95,8 @@ AMGroupBuilderPresenter >> generate [
 	groups := AMGroupBuilder new
 		          buildGroups: nbGroups
 		          forStudents: studentsSelection.
-	self displayGroups: groups
+	self displayGroups: groups.
+	self exportGroups: groups
 ]
 
 { #category : #initialization }
@@ -166,6 +176,21 @@ AMGroupBuilderPresenter >> isPromotionSelected [
 		self warning: 'No promotion selected' relativeTo: classes.
 		^ false ].
 	^ true
+]
+
+{ #category : #export }
+AMGroupBuilderPresenter >> newGeneratedGroupFileReference [
+
+	| str dateTime |
+	str := WriteStream on: String new.
+	str << classes selectedItem name.
+	str << '_'.
+	dateTime := DateAndTime now.
+	dateTime printYMDOn: str.
+	str << '_'.
+	dateTime printHMSWithDashesOn: str.
+	str << '.txt'.
+	^ str contents asFileReference
 ]
 
 { #category : #actions }
