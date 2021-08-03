@@ -162,9 +162,12 @@ AMGroupBuilderPresenter >> initializeToolbar [
 
 { #category : #initialization }
 AMGroupBuilderPresenter >> initializeWindow: aWindowPresenter [
-	
+
 	super initializeWindow: aWindowPresenter.
-	aWindowPresenter title: 'Ammolite Magenta'
+
+	aWindowPresenter maximize.
+	aWindowPresenter title: 'Ammolite Magenta'.
+	aWindowPresenter withoutDecorations
 ]
 
 { #category : #testing }
