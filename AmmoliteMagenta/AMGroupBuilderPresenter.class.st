@@ -70,6 +70,11 @@ AMGroupBuilderPresenter >> displayGroups: groups [
 ]
 
 { #category : #actions }
+AMGroupBuilderPresenter >> exit [
+	Smalltalk snapshot: true andQuit: true 
+]
+
+{ #category : #actions }
 AMGroupBuilderPresenter >> generate [
 
 	| nbGroups studentsSelection groups |
@@ -168,6 +173,14 @@ AMGroupBuilderPresenter >> pickRandomStudent [
 
 	self isPromotionSelected ifFalse: [ ^ self ].
 	output text: classes selectedItem pickRandomStudent printString
+]
+
+{ #category : #actions }
+AMGroupBuilderPresenter >> reload [
+	classes items: AMPromotion readFromDisk.
+	classes unselectAll.
+	students unselectAll 
+	
 ]
 
 { #category : #updating }
