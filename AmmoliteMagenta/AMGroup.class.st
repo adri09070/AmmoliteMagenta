@@ -38,12 +38,9 @@ AMGroup >> students [
 { #category : #printing }
 AMGroup >> textPrintOn: stream [
 
-	stream << ('Groupe ' , id printString) asText allBold.
+	stream << ('[ ', id printString, ' ]') asText allBold.
 	stream cr.
 	students do: [ :s | 
 		s printOn: stream.
-		stream << ','.
-		stream space ].
-	stream cr.
-	stream cr
+		stream cr ]
 ]
