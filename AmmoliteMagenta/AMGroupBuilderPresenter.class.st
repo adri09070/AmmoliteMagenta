@@ -121,7 +121,7 @@ AMGroupBuilderPresenter class >> styleSheet [
 		.icons [ Geometry { #height: 30 } ],
 		.iconsAndLabel [ Geometry { #height: 45 } ]
 	],
-	.text [ Geometry { #height: Reset }, Font { #size: 14 } ],
+	.text [ Geometry { #height: Reset }, Font { #size: 18 } ],
 	.code [ Font { #name: EnvironmentFont(#code) } ],
 	.codePopover [ 
 		Draw { #color : #transparent },
@@ -132,9 +132,11 @@ AMGroupBuilderPresenter class >> styleSheet [
 		Font { #color: #white } 
 	],
 	.scrollbarPopoverLarge [ Geometry { #height: 350 } ],
+	.large [ Font { #size: 20 } ],
 	.popover [
 		.print [ Draw { #color: EnvironmentColor(#balloonBackground) } ],
 		.error [ Draw { #color: #C20000 } ],
+		.large [ Font { #size: 20 } ],
 		.popoverButton [ Draw { #color: EnvironmentColor(#popoverButton) } ] ],
 	.paginator [ Geometry { #height: 20 } ],
 	.morph [ Geometry { #width: Reset, #height: Reset, #vResizing: true, #hResizing: true } ],
@@ -186,10 +188,9 @@ AMGroupBuilderPresenter >> exit [
 { #category : #export }
 AMGroupBuilderPresenter >> exportGroups: groups [
 
-	| str |
-	str := self newGeneratedGroupFileReference writeStream.
-	groups do: [ :g | g textPrintOn: str ].
-	str close
+	AMLocalRepository new
+		saveGroups: groups
+		fromClass: classes selectedItem name
 ]
 
 { #category : #actions }
@@ -250,7 +251,13 @@ AMGroupBuilderPresenter >> initializeToolbar [
 			 action: [ self exit ];
 			 yourself).
 	controls addItem: (SpToolbarButtonPresenter new
-			 label: 'Reload';
+			 label: 'Load';
+			 icon: (self iconNamed: #glamorousOpen);
+			 help: 'Load a saved group';
+			 action: [ self load ];
+			 yourself).
+	controls addItem: (SpToolbarButtonPresenter new
+			 label: 'Refresh';
 			 icon: (self iconNamed: #refresh);
 			 help: 'Reload data from disk';
 			 action: [ self reload ];
@@ -291,26 +298,45 @@ AMGroupBuilderPresenter >> isPromotionSelected [
 	^ true
 ]
 
-{ #category : #export }
-AMGroupBuilderPresenter >> newGeneratedGroupFileReference [
+{ #category : #actions }
+AMGroupBuilderPresenter >> load [
 
-	| str dateTime |
-	str := WriteStream on: String new.
-	str << classes selectedItem name.
-	str << '_'.
-	dateTime := DateAndTime now.
-	dateTime printYMDOn: str.
-	str << '_'.
-	dateTime printHMSWithDashesOn: str.
-	str << '.txt'.
-	^ str contents asFileReference
+	| repository savedGroups index |
+	repository := AMLocalRepository new.
+	savedGroups := repository savedGroups reject:[:f| f name first = $.].
+
+	index := UIManager default
+		         chooseFrom: (savedGroups collect: [ :f | f name ])
+		         title: 'Load a saved group'.
+	index = 0 ifTrue: [ ^ self ].
+	self displayGroups:
+		(repository reloadGroupsFrom: (savedGroups at: index) asFileReference)
 ]
 
 { #category : #actions }
 AMGroupBuilderPresenter >> pickRandomStudent [
 
 	self isPromotionSelected ifFalse: [ ^ self ].
-	output text: classes selectedItem pickRandomStudent printString
+	self popStudent: classes selectedItem pickRandomStudent printString relativeTo: controls 
+
+]
+
+{ #category : #ui }
+AMGroupBuilderPresenter >> popStudent: aString relativeTo: aPresenter [
+
+	self newPopover
+		application: self class application;
+		relativeTo: aPresenter;
+		position: SpPopoverPosition right;
+		presenter: (SpPresenter new
+				 application: self class application;
+				 layout: (SpBoxLayout newTopToBottom
+						  borderWidth: 2;
+						  spacing: 0;
+						  add: (self newLabel label: aString);
+						  yourself);
+				 yourself);
+		popup
 ]
 
 { #category : #actions }

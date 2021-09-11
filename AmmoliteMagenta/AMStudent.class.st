@@ -45,6 +45,11 @@ AMStudent class >> readFromString: aString [
 ]
 
 { #category : #comparing }
+AMStudent >> <= anAMStudent [ 
+	^name <= anAMStudent name
+]
+
+{ #category : #comparing }
 AMStudent >> = anObject [
 
 	"Answer whether the receiver and anObject represent the same object."
