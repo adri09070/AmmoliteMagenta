@@ -167,6 +167,18 @@ AMGroupBuilderPresenter class >> updateOutputFontSize: anInteger [
 	outputFontSize := anInteger
 ]
 
+{ #category : #displaying }
+AMGroupBuilderPresenter >> addGroupDecorationTo: presenter for: text [
+
+	| size |
+	size := (text asString readStream upTo: Character cr) size.
+	presenter addTextSegmentDecoration: (SpTextPresenterDecorator new
+			 highlightColor: (Color magenta alpha: 0.5);
+			 underlineColor: (Color white alpha: 0);
+			 interval: (1 to: size + 1);
+			 yourself)
+]
+
 { #category : #updating }
 AMGroupBuilderPresenter >> clearGroups [
 	self flag: 'todo'
@@ -179,7 +191,7 @@ AMGroupBuilderPresenter >> displayGroups: groups [
 	grid := SpGridLayout new.
 	grid borderWidth: 0.
 	grid beRowHomogeneous.
-	
+
 	i := 1.
 	j := 1.
 
@@ -191,16 +203,23 @@ AMGroupBuilderPresenter >> displayGroups: groups [
 		g textPrintOn: str.
 		text text: str contents.
 		grid add: text at: i @ j.
-	
+
 		i := i + 1.
 		i > 4 ifTrue: [ 
 			j := j + 1.
 			i := 1 ] ].
 
-	1 to: j do:[:n| grid row: n withConstraints: [ :c | c beExpand ]].
+	1 to: j do: [ :n | grid row: n withConstraints: [ :c | c beExpand ] ].
 	lay := self class defaultSpec.
-	lay children second add: grid expand: true fill: true padding: 0.
-	self layout: lay
+	lay children second
+		add: grid
+		expand: true
+		fill: true
+		padding: 0.
+	self layout: lay.
+
+	grid children keysDo: [ :textPresenter | 
+		self addGroupDecorationTo: textPresenter for: textPresenter text ]
 ]
 
 { #category : #actions }

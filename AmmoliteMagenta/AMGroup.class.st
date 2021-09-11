@@ -38,9 +38,9 @@ AMGroup >> students [
 { #category : #printing }
 AMGroup >> textPrintOn: stream [
 
-	stream << ('[ ', id printString, ' ]') asText allBold.
+	stream << ('[ ' , id printString , ' ]') asText allBold.
 	stream cr.
 	students do: [ :s | 
-		s printOn: stream.
-		stream cr ]
+		s textPrintOn:  stream.
+		s = students last ifFalse: [ stream cr ] ]
 ]

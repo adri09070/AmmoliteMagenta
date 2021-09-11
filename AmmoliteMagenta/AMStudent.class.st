@@ -120,3 +120,9 @@ AMStudent >> printOn: aStream [
 
 	aStream << self name
 ]
+
+{ #category : #printing }
+AMStudent >> textPrintOn: aStream [
+
+	aStream << self name asText
+]
