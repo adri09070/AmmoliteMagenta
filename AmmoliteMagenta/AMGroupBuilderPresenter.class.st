@@ -10,7 +10,11 @@ Class {
 		'students',
 		'controls',
 		'output',
-		'nbGroupSelection'
+		'nbGroupSelection',
+		'fontSizeSelection'
+	],
+	#classInstVars : [
+		'outputFontSize'
 	],
 	#category : #'AmmoliteMagenta-presenters'
 }
@@ -52,6 +56,11 @@ AMGroupBuilderPresenter class >> example [
 		openWithSpec
 ]
 
+{ #category : #accessing }
+AMGroupBuilderPresenter class >> outputFontSize [
+	^outputFontSize ifNil:[outputFontSize := 18]
+]
+
 { #category : #specs }
 AMGroupBuilderPresenter class >> outputLayout [
 
@@ -65,6 +74,15 @@ AMGroupBuilderPresenter class >> outputLayout [
 						    add: 'Groups'
 						    withConstraints: [ :constraints | constraints width: 50 ];
 						    add: #nbGroupSelection
+						    expand: false
+						    fill: false
+						    padding: 5;
+						    yourself)
+				   withConstraints: [ :constraints | constraints width: 60 ];
+				add: (SpBoxLayout newTopToBottom
+						    add: 'Font size'
+						    withConstraints: [ :constraints | constraints width: 50 ];
+						    add: #fontSizeSelection
 						    expand: false
 						    fill: false
 						    padding: 5;
@@ -144,6 +162,11 @@ AMGroupBuilderPresenter class >> styleSheet [
 '
 ]
 
+{ #category : #accessing }
+AMGroupBuilderPresenter class >> updateOutputFontSize: anInteger [
+	outputFontSize := anInteger
+]
+
 { #category : #updating }
 AMGroupBuilderPresenter >> clearGroups [
 	self flag: 'todo'
@@ -210,34 +233,49 @@ AMGroupBuilderPresenter >> generate [
 ]
 
 { #category : #initialization }
-AMGroupBuilderPresenter >> initializePresenters [ 
-	
+AMGroupBuilderPresenter >> initializePresenters [
+
 	super initializePresenters.
 	classes := self newTable.
-	classes addColumn: (SpStringTableColumn title: 'Class' evaluated: #name).
-	classes addColumn: ((SpStringTableColumn title: 'Number of students' evaluated: #size) width: 150; yourself).
+	classes addColumn:
+		(SpStringTableColumn title: 'Class' evaluated: #name).
+	classes addColumn:
+		((SpStringTableColumn title: 'Number of students' evaluated: #size)
+			 width: 150;
+			 yourself).
 	classes transmitDo: [ :class | 
-		class ifNotNil:[ 
+		class ifNotNil: [ 
 			self updateStudents: class.
 			self clearGroups ] ].
-		
+
 	students := self newTable.
-	students addColumn: ((SpCheckBoxTableColumn title: ' ' evaluated: [ :student | student isPresent])
-				onActivation: [ :student | student isPresent: true];
-				onDeactivation: [ :student | student isPresent: false];
-				width: 20;
-				yourself).
-	students addColumn: (SpStringTableColumn title: 'Student' evaluated: #name).
-	
+	students addColumn: ((SpCheckBoxTableColumn
+			  title: ' '
+			  evaluated: [ :student | student isPresent ])
+			 onActivation: [ :student | student isPresent: true ];
+			 onDeactivation: [ :student | student isPresent: false ];
+			 width: 20;
+			 yourself).
+	students addColumn:
+		(SpStringTableColumn title: 'Student' evaluated: #name).
+
 	controls := self newToolbar.
 	self initializeToolbar.
 	nbGroupSelection := self newDropList.
 	nbGroupSelection items: (2 to: 12) asArray.
-	
+
+	fontSizeSelection := self newDropList.
+	fontSizeSelection items: #( 14 16 18 20 22 24 26 28 ).
+	fontSizeSelection selectIndex:
+		(fontSizeSelection items indexOf: self class outputFontSize).
+	fontSizeSelection whenSelectedItemChangedDo: [ :val | 
+		self class updateOutputFontSize: val.
+		self updateOutputFontSize ].
+		self updateOutputFontSize.
 	output := self newText.
 	output beNotEditable.
 
-	
+
 	classes items: AMPromotion readFromDisk
 ]
 
@@ -345,6 +383,17 @@ AMGroupBuilderPresenter >> reload [
 	classes unselectAll.
 	students unselectAll 
 	
+]
+
+{ #category : #initialization }
+AMGroupBuilderPresenter >> updateOutputFontSize [
+
+	(((self application propertyAt: 'styleSheet') styles
+		  detect: [ :s | (s respondsTo: #name) and: [ s name = 'text' ] ]
+		  ifNone: [ ^ self ]) styles
+		 detect: [ :s | s isKindOf: SpFontStyle ]
+		 ifNone: [ ^ self ]) size: self class outputFontSize.
+	self update
 ]
 
 { #category : #updating }
