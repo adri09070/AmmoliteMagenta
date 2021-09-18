@@ -14,10 +14,10 @@ AMLocalRepository class >> readAllPromotions [
 
 	| repository |
 	repository := self new.
-	^ (repository allFileReferences reject: [ :f | f isDirectory ]) 
-		  collect: [ :f | 
-			  f path basenameWithoutExtension
-			  -> (repository readFileReference: f) ]
+	^ (repository allFileReferences reject: [ :f | 
+		   f isDirectory or: [ f basename first = $. ] ]) collect: [ :f | 
+		  f path basenameWithoutExtension
+		  -> (repository readFileReference: f) ]
 ]
 
 { #category : #reading }
