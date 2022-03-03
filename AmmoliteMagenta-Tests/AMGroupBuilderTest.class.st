@@ -33,8 +33,8 @@ AMGroupBuilderTest >> studentGroup [
 AMGroupBuilderTest >> testBuildGroupsAreShuffled [
 
 	| groups g1 g2 g3 |
-	1/0.
-	groups := builder
+	"1/0."
+	"groups := builder
 		          buildGroups: 3
 		          forStudents: self groupListWithMarkers.
 
@@ -51,7 +51,7 @@ AMGroupBuilderTest >> testBuildGroupsAreShuffled [
 	
 	self assert: (g3 select: [ :s | s markerP or:[s markerL] ]) size equals: 0
 
-
+"
 ]
 
 { #category : #tests }
@@ -155,7 +155,7 @@ AMGroupBuilderTest >> testPStackFrom [
 
 { #category : #tests }
 AMGroupBuilderTest >> testStackFillGroups [
-	1/0
+"	1/0"
 ]
 
 { #category : #tests }

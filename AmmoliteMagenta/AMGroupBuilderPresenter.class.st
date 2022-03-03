@@ -404,6 +404,14 @@ AMGroupBuilderPresenter >> reload [
 	
 ]
 
+{ #category : #updating }
+AMGroupBuilderPresenter >> update [
+
+	super update.
+	self layout children second children second children keysDo: [ :textPresenter | 
+		self addGroupDecorationTo: textPresenter for: textPresenter text ]
+]
+
 { #category : #initialization }
 AMGroupBuilderPresenter >> updateOutputFontSize [
 

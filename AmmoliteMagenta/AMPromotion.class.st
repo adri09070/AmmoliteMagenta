@@ -19,7 +19,7 @@ AMPromotion class >> readFromAssociation: association [
 	| promotion |
 	promotion := self new.
 	promotion name: association key.
-	promotion students: (association value collect: [ :string | 
+	promotion students: ((association value reject:[:s| s isEmpty]) collect: [ :string | 
 			 AMStudent readFromString: string trimBoth ]).
 	^ promotion
 ]
