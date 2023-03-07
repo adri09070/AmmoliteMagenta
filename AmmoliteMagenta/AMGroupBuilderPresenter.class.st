@@ -58,6 +58,7 @@ AMGroupBuilderPresenter class >> example [
 AMGroupBuilderPresenter class >> openOn: data [
 
 	self basicNew
+		data: data;
 		application: self application;
 		initialize;
 		openWithSpec
