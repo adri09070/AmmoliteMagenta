@@ -41,6 +41,17 @@ AMGroup >> textPrintOn: stream [
 	stream << ('[ ' , id printString , ' ]') asText allBold.
 	stream cr.
 	students do: [ :s | 
-		s textPrintOn:  stream.
+		s textPrintForGroup: self on: stream.
+
 		s = students last ifFalse: [ stream cr ] ]
+]
+
+{ #category : #printing }
+AMGroup >> textPrintStudent: student on: stream [
+
+	student textPrintOn: stream.
+	({ $+. $- } includes: student marker) ifFalse: [ ^ self ].
+
+	stream space.
+	stream << student marker asString
 ]
