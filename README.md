@@ -7,6 +7,6 @@ A small app to divide geology students in homogeneous groups.
 
 ```Smalltalk
 Metacello new
-		baseline: 'Phex';
+		baseline: 'AmmoliteMagenta';
 		repository: 'github://StevenCostiou/AmmoliteMagenta:main'
 ```
