@@ -51,6 +51,12 @@ AMGroupBuilderPresenter class >> defaultSpec [
 AMGroupBuilderPresenter class >> example [
 
 	<script>
+	self openOn: AMPromotion readFromDisk
+]
+
+{ #category : #opening }
+AMGroupBuilderPresenter class >> openOn: data [
+
 	self basicNew
 		application: self application;
 		initialize;
