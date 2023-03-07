@@ -122,6 +122,12 @@ AMStudent >> printOn: aStream [
 ]
 
 { #category : #printing }
+AMStudent >> textPrintForGroup: group on: aStream [ 
+
+	group textPrintStudent: self on: aStream
+]
+
+{ #category : #printing }
 AMStudent >> textPrintOn: aStream [
 
 	aStream << self name asText
