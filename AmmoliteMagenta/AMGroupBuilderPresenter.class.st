@@ -247,8 +247,7 @@ AMGroupBuilderPresenter >> generate [
 	groups := AMGroupBuilder new
 		          buildGroups: nbGroups
 		          forStudents: studentsSelection.
-	self displayGroups: groups.
-	self exportGroups: groups
+	self displayGroups: groups
 ]
 
 { #category : #initialization }
