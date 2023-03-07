@@ -298,7 +298,8 @@ AMGroupBuilderPresenter >> initializePresenters [
 		(SpStringTableColumn title: 'Student' evaluated: #name).
 	students addColumn:
 		(SpStringTableColumn title: 'Level' evaluated: [:s| s marker asString last ]).
-
+	students contextMenu: self studentMenu.
+	
 	controls := self newToolbar.
 	self initializeToolbar.
 	nbGroupSelection := self newDropList.
@@ -423,6 +424,16 @@ AMGroupBuilderPresenter >> reload [
 	classes unselectAll.
 	students unselectAll 
 	
+]
+
+{ #category : #initialization }
+AMGroupBuilderPresenter >> studentMenu [
+
+	^ self newMenu addGroup: [ :aGroup | 
+		  aGroup addItem: [ :anItem | 
+			  anItem
+				  name: 'inspect';
+				  action: [ students selectedItem inspect ] ] ]
 ]
 
 { #category : #initialization }
