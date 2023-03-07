@@ -276,6 +276,8 @@ AMGroupBuilderPresenter >> initializePresenters [
 			 yourself).
 	students addColumn:
 		(SpStringTableColumn title: 'Student' evaluated: #name).
+	students addColumn:
+		(SpStringTableColumn title: 'Level' evaluated: [:s| s marker asString last ]).
 
 	controls := self newToolbar.
 	self initializeToolbar.
