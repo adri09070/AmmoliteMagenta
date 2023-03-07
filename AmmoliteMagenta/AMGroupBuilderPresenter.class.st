@@ -302,10 +302,10 @@ AMGroupBuilderPresenter >> initializePresenters [
 	controls := self newToolbar.
 	self initializeToolbar.
 	nbGroupSelection := self newDropList.
-	nbGroupSelection items: (2 to: 12) asArray.
+	nbGroupSelection items: (2 to: 20) asArray.
 
 	fontSizeSelection := self newDropList.
-	fontSizeSelection items: #( 14 16 18 20 22 24 26 28 ).
+	fontSizeSelection items: #(10 12 14 16 18 20 22 24 26 28 ).
 	fontSizeSelection selectIndex:
 		(fontSizeSelection items indexOf: self class outputFontSize).
 	fontSizeSelection whenSelectedItemChangedDo: [ :val | 
