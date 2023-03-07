@@ -6,6 +6,7 @@ Class {
 	#name : #AMGroupBuilderPresenter,
 	#superclass : #StPresenter,
 	#instVars : [
+		'data',
 		'classes',
 		'students',
 		'controls',
@@ -184,6 +185,18 @@ AMGroupBuilderPresenter >> clearGroups [
 	self flag: 'todo'
 ]
 
+{ #category : #accessing }
+AMGroupBuilderPresenter >> data [
+
+	^ data ifNil: [ data := OrderedCollection new ]
+]
+
+{ #category : #accessing }
+AMGroupBuilderPresenter >> data: anObject [
+
+	data := anObject
+]
+
 { #category : #displaying }
 AMGroupBuilderPresenter >> displayGroups: groups [
 
@@ -296,7 +309,7 @@ AMGroupBuilderPresenter >> initializePresenters [
 	output beNotEditable.
 
 
-	classes items: AMPromotion readFromDisk
+	classes items: self data
 ]
 
 { #category : #initialization }
