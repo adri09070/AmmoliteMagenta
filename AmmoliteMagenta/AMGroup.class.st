@@ -48,9 +48,9 @@ AMGroup >> textPrintOn: stream [
 
 { #category : #printing }
 AMGroup >> textPrintStudent: student on: stream [
-
+	self haltIf:[student name = 'Adèle'].
 	student textPrintOn: stream.
-	({ $+. $- } includes: student marker) ifFalse: [ ^ self ].
+	({ '+'. '-' } includes: student marker) ifFalse: [ ^ self ].
 
 	stream space.
 	stream << student marker asString
