@@ -297,7 +297,7 @@ AMGroupBuilderPresenter >> initializePresenters [
 	students addColumn:
 		(SpStringTableColumn title: 'Student' evaluated: #name).
 	students addColumn:
-		(SpStringTableColumn title: 'Level' evaluated: [:s| s marker asString last ]).
+		(SpStringTableColumn title: 'Level' evaluated: [:s| s marker asString ]).
 	students contextMenu: self studentMenu.
 	
 	controls := self newToolbar.
@@ -315,7 +315,6 @@ AMGroupBuilderPresenter >> initializePresenters [
 		self updateOutputFontSize.
 	output := self newText.
 	output beNotEditable.
-
 
 	classes items: self data
 ]
