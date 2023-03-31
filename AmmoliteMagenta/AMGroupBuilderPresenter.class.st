@@ -304,7 +304,9 @@ AMGroupBuilderPresenter >> initializePresenters [
 	self initializeToolbar.
 	nbGroupSelection := self newDropList.
 	nbGroupSelection items: (2 to: 20) asArray.
-
+	nbGroupSelection selectItem: 10.
+	nbGroupSelection enabled: false.
+	
 	fontSizeSelection := self newDropList.
 	fontSizeSelection items: #(10 12 14 16 18 20 22 24 26 28 ).
 	fontSizeSelection selectIndex:
@@ -313,6 +315,10 @@ AMGroupBuilderPresenter >> initializePresenters [
 		self class updateOutputFontSize: val.
 		self updateOutputFontSize ].
 		self updateOutputFontSize.
+	fontSizeSelection selectItem: 10.
+	fontSizeSelection enabled: false.
+		
+	
 	output := self newText.
 	output beNotEditable.
 
