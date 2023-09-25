@@ -244,7 +244,7 @@ AMGroupBuilderPresenter >> displayGroups: groups [
 
 { #category : #actions }
 AMGroupBuilderPresenter >> exit [
-	Smalltalk snapshot: true andQuit: true 
+	self withWindowDo: [ :w| w close ]
 ]
 
 { #category : #export }
