@@ -1,10 +1,11 @@
 Class {
-	#name : #AMPromotionTest,
-	#superclass : #TestCase,
-	#category : #'AmmoliteMagenta-Tests'
+	#name : 'AMPromotionTest',
+	#superclass : 'TestCase',
+	#category : 'AmmoliteMagenta-Tests',
+	#package : 'AmmoliteMagenta-Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 AMPromotionTest >> testPickRandomStudent [
 	|promotion student|	
 	promotion := AMPromotion readFromDisk first.
@@ -15,7 +16,7 @@ AMPromotionTest >> testPickRandomStudent [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 AMPromotionTest >> testReadFromAssociation [
 	|data promotion student|
 	data :=  'test' -> { 'Jean-Pierre Screugneugneu -'. 'Bob Madeleine +'. 'Lolo Saint-Martin' }.
