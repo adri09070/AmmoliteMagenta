@@ -8,18 +8,21 @@ Class {
 { #category : 'initialization' }
 AMParsingBugExample >> promotion [
 
-	| promotion students|
-	
+	| promotion students |
 	promotion := AMPromotion new.
 	promotion name: 'OCRE xp'.
-	
-	students := (self students splitOn: Character cr) collect: [ :studentDataString | 
-		AMStudent readFromDataString: studentDataString 
-	].
+
+	students := (self students splitOn: Character cr) collect: [
+		            :studentDataString |
+		            | student readStream |
+		            student := AMStudent new.
+		            readStream := studentDataString readStream.
+		            student name: (readStream upTo: Character space).
+		            student marker: readStream upToEnd.
+		            student ].
 	promotion students: students.
-	
+
 	^ promotion
-		
 ]
 
 { #category : 'initialization' }
@@ -64,9 +67,10 @@ Catherine -'
 { #category : 'running' }
 AMParsingBugExample >> testStudentPrinting [
 
-	| group |
+	| group students |
 	group := AMGroup new.
-	self promotion students do: [ :s |
+	students := self promotion students.
+	students do: [ :s |
 		| str |
 		str := WriteStream on: String new.
 		group textPrintStudent: s on: str.
