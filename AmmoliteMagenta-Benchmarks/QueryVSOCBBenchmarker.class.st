@@ -75,11 +75,7 @@ QueryVSOCBBenchmarker >> benchmark [
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkNormalTimes [
 
-	30 timesRepeat: [
-		normalTimes add: [
-			self exampleCode
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+	30 timesRepeat: [ normalTimes add: self exampleCode timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -92,10 +88,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsRead [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnRead.
 
-		ocbTimesAllVarsRead add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesAllVarsRead add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -108,10 +101,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsReadWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnAccess.
 
-		ocbTimesAllVarsReadWrite add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesAllVarsReadWrite add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -124,10 +114,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnWrite.
 
-		ocbTimesAllVarsWrite add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesAllVarsWrite add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -140,10 +127,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBMethodCall [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnCallTo: #textPrintOn:.
 
-		ocbTimesMethodCall add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesMethodCall add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -155,11 +139,11 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 		self stepToGetFirstStudent.
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnReadTo: #marker.
+		1 halt.
 
-		ocbTimesOneVarRead add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesOneVarRead add: [ sindarinDebugger proceed ] timeToRun.
+		
+		1 halt ]
 ]
 
 { #category : #benchmarking }
@@ -172,10 +156,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarReadWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnAccessTo: #marker.
 
-		ocbTimesOneVarReadWrite add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesOneVarReadWrite add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -188,10 +169,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnWriteTo: #marker.
 
-		ocbTimesOneVarWrite add: [
-			process resume
-				on: TestFailure
-				do: [  ] ] timeToRun ]
+		ocbTimesOneVarWrite add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -328,7 +306,11 @@ QueryVSOCBBenchmarker >> benchmarkTTQOneVarWrite [
 { #category : #'as yet unclassified' }
 QueryVSOCBBenchmarker >> exampleCode [
 
-	^ [ AMParsingBugExample new testStudentPrinting ]
+	^ [
+	  10 timesRepeat: [
+		  [ AMParsingBugExample new testStudentPrinting ]
+			  on: TestFailure
+			  do: [  ] ] ]
 ]
 
 { #category : #initialization }
