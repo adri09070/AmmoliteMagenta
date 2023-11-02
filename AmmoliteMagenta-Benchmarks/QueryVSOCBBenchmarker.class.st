@@ -139,11 +139,8 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 		self stepToGetFirstStudent.
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnReadTo: #marker.
-		1 halt.
 
-		ocbTimesOneVarRead add: [ sindarinDebugger proceed ] timeToRun.
-		
-		1 halt ]
+		ocbTimesOneVarRead add: [ process resume ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -310,7 +307,7 @@ QueryVSOCBBenchmarker >> exampleCode [
 	  10 timesRepeat: [
 		  [ AMParsingBugExample new testStudentPrinting ]
 			  on: TestFailure
-			  do: [  ] ] ]
+			  do: [ "Transcript traceCr: thisContext stack" ] ] ]
 ]
 
 { #category : #initialization }
@@ -369,8 +366,8 @@ QueryVSOCBBenchmarker >> newSindarinDebugger [
 QueryVSOCBBenchmarker >> stepToGetFirstStudent [
 
 	sindarinDebugger stepUntil: [
-		sindarinDebugger assignmentVariableName = 'students' ].
-	objectOfInterest := sindarinDebugger assignmentValue first
+		sindarinDebugger assignmentVariableName = 'student' ].
+	objectOfInterest := sindarinDebugger assignmentValue
 
 ]
 
