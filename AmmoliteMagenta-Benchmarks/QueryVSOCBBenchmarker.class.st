@@ -88,7 +88,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsRead [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnRead.
 
-		ocbTimesAllVarsRead add: [ process resume ] timeToRun ]
+		ocbTimesAllVarsRead add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -101,7 +101,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsReadWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnAccess.
 
-		ocbTimesAllVarsReadWrite add: [ process resume ] timeToRun ]
+		ocbTimesAllVarsReadWrite add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -114,7 +114,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnWrite.
 
-		ocbTimesAllVarsWrite add: [ process resume ] timeToRun ]
+		ocbTimesAllVarsWrite add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -125,22 +125,23 @@ QueryVSOCBBenchmarker >> benchmarkOCBMethodCall [
 		self newSindarinDebugger.
 		self stepToGetGroupOfStudents.
 		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnCallTo: #textPrintOn:.
+		objectOfInterest haltOnCallTo: #textPrintStudent:on:.
 
-		ocbTimesMethodCall add: [ process resume ] timeToRun ]
+		ocbTimesMethodCall add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 
 	| process |
-	30 timesRepeat: [
+	30 timesRepeat: [ "process resume.
+			[ process isTerminated ] whileFalse: [  ] ] timeToRun""[ ocbTimesOneVarRead add: [ process run ] timeToRun ] fork ]"
 		self newSindarinDebugger.
 		self stepToGetFirstStudent.
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnReadTo: #marker.
 
-		ocbTimesOneVarRead add: [ process resume ] timeToRun ]
+		ocbTimesOneVarRead add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -153,7 +154,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarReadWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnAccessTo: #marker.
 
-		ocbTimesOneVarReadWrite add: [ process resume ] timeToRun ]
+		ocbTimesOneVarReadWrite add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }
@@ -166,7 +167,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnWriteTo: #marker.
 
-		ocbTimesOneVarWrite add: [ process resume ] timeToRun ]
+		ocbTimesOneVarWrite add: [ process completeTo: nil ] timeToRun ]
 ]
 
 { #category : #benchmarking }

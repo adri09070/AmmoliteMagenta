@@ -1,7 +1,7 @@
-Extension { #name : #VariableBreakpoint }
+Extension { #name : #Breakpoint }
 
 { #category : #'*AmmoliteMagenta-Benchmarks' }
-VariableBreakpoint >> breakInContext: aContext node: aNode [
+Breakpoint >> breakInContext: aContext node: aNode [
 
 	<debuggerCompleteToSender>
 	self class notifyBreakpointHit: self inContext: aContext node: aNode.
@@ -9,5 +9,7 @@ VariableBreakpoint >> breakInContext: aContext node: aNode [
 	self onCount ifTrue: [
 		self increaseCount = self breakOnCount ifFalse: [ ^ self ] ].
 	self once ifTrue: [ self disable ].
-	BreakWithoutStop break
+	self isObjectCentric
+		ifFalse: [ Break break ]
+		ifTrue: [ BreakWithoutStop break ]
 ]
