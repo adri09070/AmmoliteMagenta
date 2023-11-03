@@ -75,7 +75,8 @@ QueryVSOCBBenchmarker >> benchmark [
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkNormalTimes [
 
-	30 timesRepeat: [ normalTimes add: self exampleCode timeToRun ]
+	30 timesRepeat: [
+		normalTimes add: self exampleCode timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
@@ -88,7 +89,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsRead [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnRead.
 
-		ocbTimesAllVarsRead add: [ process completeTo: nil ] timeToRun ]
+		ocbTimesAllVarsRead add: [ process completeTo: nil ] timeToRunWithoutGC  ]
 ]
 
 { #category : #benchmarking }
@@ -101,7 +102,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsReadWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnAccess.
 
-		ocbTimesAllVarsReadWrite add: [ process completeTo: nil ] timeToRun ]
+		ocbTimesAllVarsReadWrite add: [ process completeTo: nil ] timeToRunWithoutGC  ]
 ]
 
 { #category : #benchmarking }
@@ -114,7 +115,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBAllVarsWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnWrite.
 
-		ocbTimesAllVarsWrite add: [ process completeTo: nil ] timeToRun ]
+		ocbTimesAllVarsWrite add: [ process completeTo: nil ] timeToRunWithoutGC  ]
 ]
 
 { #category : #benchmarking }
@@ -127,13 +128,14 @@ QueryVSOCBBenchmarker >> benchmarkOCBMethodCall [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnCallTo: #textPrintStudent:on:.
 
-		ocbTimesMethodCall add: [ process completeTo: nil ] timeToRun ]
+		ocbTimesMethodCall add:
+			[ process completeTo: nil ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 
-	| process |
+	| process initialTime |
 	30 timesRepeat: [ "process resume.
 			[ process isTerminated ] whileFalse: [  ] ] timeToRun""[ ocbTimesOneVarRead add: [ process run ] timeToRun ] fork ]"
 		self newSindarinDebugger.
@@ -141,7 +143,14 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnReadTo: #marker.
 
-		ocbTimesOneVarRead add: [ process completeTo: nil ] timeToRun ]
+		"initialTime := Time millisecondClockValue - Smalltalk vm totalGCTime.
+		
+		process run.
+		
+		ocbTimesOneVarRead add: Time millisecondClockValue - initialTime - Smalltalk vm totalGCTime"
+
+		ocbTimesOneVarRead add:
+			[ process completeTo: nil ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
@@ -154,7 +163,7 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarReadWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnAccessTo: #marker.
 
-		ocbTimesOneVarReadWrite add: [ process completeTo: nil ] timeToRun ]
+		ocbTimesOneVarReadWrite add: [ process completeTo: nil ] timeToRunWithoutGC  ]
 ]
 
 { #category : #benchmarking }
@@ -167,7 +176,8 @@ QueryVSOCBBenchmarker >> benchmarkOCBOneVarWrite [
 		process := sindarinDebugger debugSession process.
 		objectOfInterest haltOnWriteTo: #marker.
 
-		ocbTimesOneVarWrite add: [ process completeTo: nil ] timeToRun ]
+		ocbTimesOneVarWrite add:
+			[ process completeTo: nil ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
@@ -305,7 +315,7 @@ QueryVSOCBBenchmarker >> benchmarkTTQOneVarWrite [
 QueryVSOCBBenchmarker >> exampleCode [
 
 	^ [
-	  10 timesRepeat: [
+	  100 timesRepeat: [
 		  [ AMParsingBugExample new testStudentPrinting ]
 			  on: TestFailure
 			  do: [ "Transcript traceCr: thisContext stack" ] ] ]
