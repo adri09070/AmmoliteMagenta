@@ -55,34 +55,31 @@ QueryVSOCBBenchmarker >> addBenchmarkResultNamed: benchName withPharoTimes: phar
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmark [
 
-	1 halt.
 	self benchmarkNormalTimes.
 
-	1 halt.
 	self benchmarkOCBOneVarRead.
-	1 halt.
-	self benchmarkOCBOneVarWrite.
-	1 halt.
-	self benchmarkOCBOneVarReadWrite.
-	1 halt.
-	self benchmarkOCBAllVarsRead.
-	1 halt.
-	self benchmarkOCBAllVarsWrite.
-	1 halt.
-	self benchmarkOCBAllVarsReadWrite.
-	1 halt.
-	self benchmarkOCBMethodCall.
-	1 halt.
 
-	1 halt.
+	self benchmarkOCBOneVarWrite.
+
+	self benchmarkOCBOneVarReadWrite.
+
+	self benchmarkOCBAllVarsRead.
+
+	self benchmarkOCBAllVarsWrite.
+
+	self benchmarkOCBAllVarsReadWrite.
+
+	self benchmarkOCBMethodCall.
+
+
 	self benchmarkTTQOneVarRead.
-	1 halt.
+
 	self benchmarkTTQOneVarWrite.
-	1 halt.
+
 	self benchmarkTTQAllVarsRead.
-	1 halt.
+
 	self benchmarkTTQAllVarsWrite.
-	1 halt.
+
 	self benchmarkTTQMethodCall.
 
 	self computeBenchmarkResult
@@ -92,108 +89,75 @@ QueryVSOCBBenchmarker >> benchmark [
 QueryVSOCBBenchmarker >> benchmarkNormalTimes [
 
 	30 timesRepeat: [
-		normalTimes add: self exampleCode timeToRunWithoutGC ]
+		normalTimes add:
+			(self exampleCodeinstrumenter: [ :students :group |  ])
+				timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsRead [
 
-	| process |
 	30 timesRepeat: [
-		self newSindarinDebugger.
-		self stepToGetFirstStudent.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnRead.
-
-		ocbTimesAllVarsRead add: [ process completeTo: nil ] timeToRunWithoutGC  ]
+		ocbTimesAllVarsRead add:
+			[
+			self exampleCodeinstrumenter: [ :students :group | students first haltOnRead  ] ]
+				timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsReadWrite [
 
-	| process |
 	30 timesRepeat: [
-		self newSindarinDebugger.
-		self stepToGetFirstStudent.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnAccess.
-
-		ocbTimesAllVarsReadWrite add: [ process completeTo: nil ] timeToRunWithoutGC  ]
+		ocbTimesAllVarsReadWrite add: [
+			self exampleCodeinstrumenter: [ :students :group |
+				students first haltOnAccess ] ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsWrite [
 
-	| process |
-	30 timesRepeat: [
-		self newSindarinDebugger.
-		self stepToGetFirstStudent.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnWrite.
 
-		ocbTimesAllVarsWrite add: [ process completeTo: nil ] timeToRunWithoutGC  ]
+	30 timesRepeat: [
+		ocbTimesAllVarsWrite add: [
+			self exampleCodeinstrumenter: [ :students :group |
+				students first haltOnWrite ] ] timeToRunWithoutGC]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBMethodCall [
 
-	| process |
 	30 timesRepeat: [
-		self newSindarinDebugger.
-		self stepToGetGroupOfStudents.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnCallTo: #textPrintStudent:on:.
-
-		ocbTimesMethodCall add:
-			[ process completeTo: nil ] timeToRunWithoutGC ]
+		ocbTimesMethodCall add: [
+			self exampleCodeinstrumenter: [ :students :group |
+				group haltOnCallTo: #textPrintStudent:on: ] ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 
-	| process initialTime |
-	30 timesRepeat: [ "process resume.
-			[ process isTerminated ] whileFalse: [  ] ] timeToRun""[ ocbTimesOneVarRead add: [ process run ] timeToRun ] fork ]"
-		self newSindarinDebugger.
-		self stepToGetFirstStudent.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnReadTo: #marker.
-
-		"initialTime := Time millisecondClockValue - Smalltalk vm totalGCTime.
-		
-		process run.
-		
-		ocbTimesOneVarRead add: Time millisecondClockValue - initialTime - Smalltalk vm totalGCTime"
-
-		ocbTimesOneVarRead add:
-			[ process completeTo: nil ] timeToRunWithoutGC ]
+	30 timesRepeat: [
+		ocbTimesOneVarRead add: [
+			self exampleCodeinstrumenter: [ :students :group |
+				students first haltOnReadTo: #marker ] ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarReadWrite [
 
-	| process |
-	30 timesRepeat: [
-		self newSindarinDebugger.
-		self stepToGetFirstStudent.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnAccessTo: #marker.
 
-		ocbTimesOneVarReadWrite add: [ process completeTo: nil ] timeToRunWithoutGC  ]
+	30 timesRepeat: [
+		ocbTimesOneVarReadWrite add: 	 [
+			self exampleCodeinstrumenter: [ :students :group |
+				students first haltOnAccessTo: #marker. ] ] timeToRunWithoutGC]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarWrite [
 
-	| process |
 	30 timesRepeat: [
-		self newSindarinDebugger.
-		self stepToGetFirstStudent.
-		process := sindarinDebugger debugSession process.
-		objectOfInterest haltOnWriteTo: #marker.
-
-		ocbTimesOneVarWrite add:
-			[ process completeTo: nil ] timeToRunWithoutGC ]
+		ocbTimesOneVarWrite add: [
+			self exampleCodeinstrumenter: [ :students :group |
+				students first haltOnWriteTo: #marker ] ] timeToRunWithoutGC ]
 ]
 
 { #category : #benchmarking }
@@ -361,11 +325,14 @@ QueryVSOCBBenchmarker >> computeBenchmarkResult [
 ]
 
 { #category : #'as yet unclassified' }
-QueryVSOCBBenchmarker >> exampleCode [
+QueryVSOCBBenchmarker >> exampleCodeinstrumenter: anObject [
 
 	^ [
 	  100 timesRepeat: [
-		  [ AMParsingBugExample new testStudentPrinting ]
+		  [ 
+		  AMParsingBugExample new
+			  instrumenter: anObject;
+			  testStudentPrinting ]
 			  on: TestFailure
 			  do: [ "Transcript traceCr: thisContext stack" ] ] ]
 ]
@@ -374,7 +341,9 @@ QueryVSOCBBenchmarker >> exampleCode [
 QueryVSOCBBenchmarker >> initialize [
 
 	super initialize.
-	seekerDebugger := SeekerDebugger headlessDebugBlock: self exampleCode.
+	seekerDebugger := SeekerDebugger headlessDebugBlock:
+		                  (self exampleCodeinstrumenter: [ :students :group |
+			                    ]).
 
 	querySolver := QSCollection new.
 
@@ -405,7 +374,8 @@ QueryVSOCBBenchmarker >> initialize [
 QueryVSOCBBenchmarker >> newSeekerDebugger [
 
 	seekerDebugger := (SeekerDebugger headlessDebugBlock:
-			                   self exampleCode)
+			                   (self exampleCodeinstrumenter: [ :students :group |
+					                     ]))
 		                  runReversibly;
 		                  yourself.
 
@@ -414,12 +384,6 @@ QueryVSOCBBenchmarker >> newSeekerDebugger [
 			        inContext:
 			        seekerDebugger currentContext sender sender sender sender
 				        home)
-]
-
-{ #category : #'instance creation' }
-QueryVSOCBBenchmarker >> newSindarinDebugger [
-
-	sindarinDebugger := SindarinDebugger debug: self exampleCode
 ]
 
 { #category : #'instance creation' }

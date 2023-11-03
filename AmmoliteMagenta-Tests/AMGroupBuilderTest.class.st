@@ -1,27 +1,26 @@
 Class {
-	#name : 'AMGroupBuilderTest',
-	#superclass : 'TestCase',
+	#name : #AMGroupBuilderTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'builder'
 	],
-	#category : 'AmmoliteMagenta-Tests',
-	#package : 'AmmoliteMagenta-Tests'
+	#category : 'AmmoliteMagenta-Tests'
 }
 
-{ #category : 'helpers' }
+{ #category : #helpers }
 AMGroupBuilderTest >> groupListWithMarkers [
 
 	^{'a+'. 'b-'. 'c'. 'd+'. 'e-'. 'f'} collect: [:name|AMStudent readFromString: name]
 ]
 
-{ #category : 'running' }
+{ #category : #running }
 AMGroupBuilderTest >> setUp [
 	super setUp.
 	
 	builder := AMGroupBuilder new 
 ]
 
-{ #category : 'helpers' }
+{ #category : #helpers }
 AMGroupBuilderTest >> studentGroup [
 
 	^ { 
@@ -30,7 +29,7 @@ AMGroupBuilderTest >> studentGroup [
 		  (AMStudent readFromString: 'c') }
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsAreShuffled [
 
 	| groups g1 g2 g3 |
@@ -55,7 +54,7 @@ AMGroupBuilderTest >> testBuildGroupsAreShuffled [
 "
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsIds [
 
 	| groups |
@@ -67,7 +66,7 @@ AMGroupBuilderTest >> testBuildGroupsIds [
 	self assert: groups fifth id equals: 5
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsRepartition [
 
 	| groups |
@@ -83,14 +82,14 @@ AMGroupBuilderTest >> testBuildGroupsRepartition [
 	self assert: groups fifth students size equals: 5
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsSize [
 	|groups|
 	groups := builder buildGroups: 5 forStudents: (($a to: $z) collect:[:e|  AMStudent readFromString: e asString]).
 	self assert: groups size equals: 5
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testBuildGroupsWithMarkersRepartition [
 
 	| groups g1 g2 g3 |
@@ -114,7 +113,7 @@ AMGroupBuilderTest >> testBuildGroupsWithMarkersRepartition [
 
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testLStackFrom [
 
 	| students s |
@@ -124,7 +123,7 @@ AMGroupBuilderTest >> testLStackFrom [
 	self assert: s size equals: 1
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testNStackFrom [
 
 	| students s |
@@ -134,7 +133,7 @@ AMGroupBuilderTest >> testNStackFrom [
 	self assert: s size equals: 1
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testNewGroups [
 
 	| groups |
@@ -144,7 +143,7 @@ AMGroupBuilderTest >> testNewGroups [
 	self assert: groups third nextLink equals: groups first
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testPStackFrom [
 
 	| students s |
@@ -154,12 +153,12 @@ AMGroupBuilderTest >> testPStackFrom [
 	self assert: s size equals: 1
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testStackFillGroups [
 "	1/0"
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupBuilderTest >> testStackFrom [
 
 	|s|

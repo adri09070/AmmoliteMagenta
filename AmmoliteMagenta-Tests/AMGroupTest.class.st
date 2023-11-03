@@ -1,15 +1,14 @@
 Class {
-	#name : 'AMGroupTest',
-	#superclass : 'TestCase',
+	#name : #AMGroupTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'group',
 		'students'
 	],
-	#category : 'AmmoliteMagenta-Tests',
-	#package : 'AmmoliteMagenta-Tests'
+	#category : 'AmmoliteMagenta-Tests'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 AMGroupTest >> setUp [
 
 	super setUp.
@@ -19,7 +18,7 @@ AMGroupTest >> setUp [
 	($a to: $z) do: [ :letter | students add: (AMStudent new name: letter) ]
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupTest >> testAddStudent [
 	
 	group addStudent: students last.
@@ -29,7 +28,7 @@ AMGroupTest >> testAddStudent [
 	self assert: group students second identicalTo: students last
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMGroupTest >> testdefaultStudents [
 	
 	self assert: group students isEmpty

@@ -1,11 +1,43 @@
 Class {
-	#name : 'AMParsingBugExample',
-	#superclass : 'TestCase',
-	#category : 'AmmoliteMagenta-Tests',
-	#package : 'AmmoliteMagenta-Tests'
+	#name : #AMParsingBugExample,
+	#superclass : #TestCase,
+	#instVars : [
+		'instrumenter'
+	],
+	#category : #'AmmoliteMagenta-Tests'
 }
 
-{ #category : 'initialization' }
+{ #category : #running }
+AMParsingBugExample >> createPromotion [
+
+	| promotion students |
+	promotion := AMPromotion new.
+	promotion name: 'OCRE xp'.
+
+	students := (self students splitOn: Character cr) collect: [
+		            :studentDataString |
+		            | student |
+		            student := AMStudent new.
+		           	student data: studentDataString.
+		            student ].
+	promotion students: students.
+
+	^ promotion
+]
+
+{ #category : #initialization }
+AMParsingBugExample >> initialize [
+	super initialize.
+	instrumenter := [ :students :group| ]
+]
+
+{ #category : #accessing }
+AMParsingBugExample >> instrumenter: anObject [
+
+	instrumenter := anObject
+]
+
+{ #category : #initialization }
 AMParsingBugExample >> promotion [
 
 	| promotion students |
@@ -25,7 +57,17 @@ AMParsingBugExample >> promotion [
 	^ promotion
 ]
 
-{ #category : 'initialization' }
+{ #category : #running }
+AMParsingBugExample >> readPromotion: promotion [
+
+	promotion students do: [ :student |
+		| readStream |
+		readStream := student data readStream.
+		student name: (readStream upTo: Character space).
+		student marker: readStream upToEnd ]
+]
+
+{ #category : #initialization }
 AMParsingBugExample >> students [
 	^'Nath -
 Adèle +
@@ -64,12 +106,15 @@ Adèle +
 Catherine -'
 ]
 
-{ #category : 'running' }
+{ #category : #running }
 AMParsingBugExample >> testStudentPrinting [
 
-	| group students |
+	| group promotion students |
 	group := AMGroup new.
-	students := self promotion students.
+	promotion := self createPromotion.
+	students := promotion students.
+	instrumenter value: students value: group.
+	self readPromotion: promotion.
 	students do: [ :s |
 		| str |
 		str := WriteStream on: String new.
@@ -77,7 +122,7 @@ AMParsingBugExample >> testStudentPrinting [
 		self assert: (#( $- $+ ) includes: str contents last) ]
 ]
 
-{ #category : 'running' }
+{ #category : #running }
 AMParsingBugExample >> testStudentSign [
 
 	self assert: (self promotion students allSatisfy: [:s | s markerL or:[s markerP]]) 

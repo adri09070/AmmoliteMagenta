@@ -1,14 +1,13 @@
 Class {
-	#name : 'AMStudentTest',
-	#superclass : 'TestCase',
+	#name : #AMStudentTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'student'
 	],
-	#category : 'AmmoliteMagenta-Tests',
-	#package : 'AmmoliteMagenta-Tests'
+	#category : 'AmmoliteMagenta-Tests'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 AMStudentTest >> setUp [
 	super setUp.
 	
@@ -16,19 +15,19 @@ AMStudentTest >> setUp [
 	student name: 'toto'
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testInitialMarker [
 
 	self deny: student markerP.
 	self deny: student markerL
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testIsPresent [
 	self assert: student isPresent
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testMarkerL [
 
 	student marker: $-.
@@ -36,7 +35,7 @@ AMStudentTest >> testMarkerL [
 	self deny: student markerP
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testMarkerP [
 
 	student marker: $+.
@@ -44,7 +43,7 @@ AMStudentTest >> testMarkerP [
 	self deny: student markerL
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testMarkers [
 
 	self
@@ -52,7 +51,7 @@ AMStudentTest >> testMarkers [
 		equals: (Array with: AMStudent markerP with: AMStudent markerL)
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testPrintOn [
 	|str|
 	str := WriteStream  on: String new.
@@ -60,7 +59,7 @@ AMStudentTest >> testPrintOn [
 	self assert: str contents equals: student name
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testReadFromStringLMarker [
 
 	student := AMStudent readFromString: ' Karl-Marx - '.
@@ -68,13 +67,13 @@ AMStudentTest >> testReadFromStringLMarker [
 	self assert: student markerL
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testReadFromStringNoMarker [
 	self assert: (AMStudent readFromString: ' Karl Marx ') name equals: 'Karl Marx'
 	
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 AMStudentTest >> testReadFromStringPMarker [
 
 	student := AMStudent readFromString: ' Karl Marx + '.
