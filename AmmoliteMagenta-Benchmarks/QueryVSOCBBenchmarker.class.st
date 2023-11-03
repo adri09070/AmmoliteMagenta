@@ -24,7 +24,8 @@ Class {
 		'ttqTimesAllVarsReadUncached',
 		'ttqTimesAllVarsWriteUncached',
 		'ttqTimesMethodCallUncached',
-		'objectOfInterest'
+		'objectOfInterest',
+		'result'
 	],
 	#category : #'AmmoliteMagenta-Benchmarks'
 }
@@ -36,6 +37,19 @@ QueryVSOCBBenchmarker class >> benchmark [
 	self new
 		benchmark;
 		inspect
+]
+
+{ #category : #adding }
+QueryVSOCBBenchmarker >> addBenchmarkResultNamed: benchName withPharoTimes: pharoTimes withOcbTimes: ocbTimes withTTQCachedTimes: ttqCachedTimes withTTQUncachedTimes: ttqUncachedTimes [
+
+	result
+		addResult: (OCBVSTTQBenchmarkResult
+				 computeResultNamed: benchName
+				 withPharo: pharoTimes
+				 withOcb: ocbTimes
+				 withTTQCached: ttqCachedTimes
+				 withTTQUncachedTimes: ttqUncachedTimes)
+		named: benchName
 ]
 
 { #category : #benchmarking }
@@ -69,7 +83,9 @@ QueryVSOCBBenchmarker >> benchmark [
 	1 halt.
 	self benchmarkTTQAllVarsWrite.
 	1 halt.
-	self benchmarkTTQMethodCall
+	self benchmarkTTQMethodCall.
+
+	self computeBenchmarkResult
 ]
 
 { #category : #benchmarking }
@@ -309,6 +325,39 @@ QueryVSOCBBenchmarker >> benchmarkTTQOneVarWrite [
 					 withVariableName: #marker);
 			resolve.
 		ttqTimesOneVarWriteUncached add: querySolver timeToRun ]
+]
+
+{ #category : #'as yet unclassified' }
+QueryVSOCBBenchmarker >> computeBenchmarkResult [
+
+	result := OCBVSTTQBenchmarkResultSet new.
+
+	self
+		addBenchmarkResultNamed: 'oneVarRead'
+		withPharoTimes: normalTimes
+		withOcbTimes: ocbTimesOneVarRead
+		withTTQCachedTimes: ttqTimesOneVarRead
+		withTTQUncachedTimes: ttqTimesOneVarReadUncached;
+		addBenchmarkResultNamed: 'oneVarWrite'
+		withPharoTimes: normalTimes
+		withOcbTimes: ocbTimesOneVarWrite
+		withTTQCachedTimes: ttqTimesOneVarWrite
+		withTTQUncachedTimes: ttqTimesOneVarWriteUncached;
+		addBenchmarkResultNamed: 'allVarsRead'
+		withPharoTimes: normalTimes
+		withOcbTimes: ocbTimesAllVarsRead
+		withTTQCachedTimes: ttqTimesAllVarsRead
+		withTTQUncachedTimes: ttqTimesAllVarsReadUncached;
+		addBenchmarkResultNamed: 'allVarsWrite'
+		withPharoTimes: normalTimes
+		withOcbTimes: ocbTimesAllVarsWrite
+		withTTQCachedTimes: ttqTimesAllVarsWrite
+		withTTQUncachedTimes: ttqTimesAllVarsWriteUncached;
+		addBenchmarkResultNamed: 'methodCall'
+		withPharoTimes: normalTimes
+		withOcbTimes: ocbTimesMethodCall
+		withTTQCachedTimes: ttqTimesMethodCall
+		withTTQUncachedTimes: ttqTimesMethodCall
 ]
 
 { #category : #'as yet unclassified' }
