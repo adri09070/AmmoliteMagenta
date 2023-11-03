@@ -7,6 +7,6 @@ Class {
 { #category : #signaling }
 BreakWithoutStop >> signal [
 
-	Transcript traceCr: 'Breakpoint hit'.
-	^ self
+"	Transcript traceCr: 'Breakpoint hit'."
+
 ]

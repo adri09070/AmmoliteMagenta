@@ -2,19 +2,26 @@ Class {
 	#name : #AMParsingBugExample,
 	#superclass : #TestCase,
 	#instVars : [
-		'instrumenter'
+		'instrumenter',
+		'group',
+		'promotion',
+		'students'
 	],
 	#category : #'AmmoliteMagenta-Tests'
 }
 
 { #category : #running }
-AMParsingBugExample >> createPromotion [
+AMParsingBugExample >> createGroup [
+	group := AMGroup new
+]
 
-	| promotion students |
+{ #category : #running }
+AMParsingBugExample >> createPromotion [
+	
 	promotion := AMPromotion new.
 	promotion name: 'OCRE xp'.
 
-	students := (self students splitOn: Character cr) collect: [
+	students := (self studentsList splitOn: Character cr) collect: [
 		            :studentDataString |
 		            | student |
 		            student := AMStudent new.
@@ -25,10 +32,28 @@ AMParsingBugExample >> createPromotion [
 	^ promotion
 ]
 
+{ #category : #accessing }
+AMParsingBugExample >> group [
+
+	^ group
+]
+
+{ #category : #accessing }
+AMParsingBugExample >> group: anObject [
+
+	group := anObject
+]
+
 { #category : #initialization }
 AMParsingBugExample >> initialize [
 	super initialize.
 	instrumenter := [ :students :group| ]
+]
+
+{ #category : #accessing }
+AMParsingBugExample >> instrumenter [
+
+	^ instrumenter
 ]
 
 { #category : #accessing }
@@ -40,21 +65,13 @@ AMParsingBugExample >> instrumenter: anObject [
 { #category : #initialization }
 AMParsingBugExample >> promotion [
 
-	| promotion students |
-	promotion := AMPromotion new.
-	promotion name: 'OCRE xp'.
-
-	students := (self students splitOn: Character cr) collect: [
-		            :studentDataString |
-		            | student readStream |
-		            student := AMStudent new.
-		            readStream := studentDataString readStream.
-		            student name: (readStream upTo: Character space).
-		            student marker: readStream upToEnd.
-		            student ].
-	promotion students: students.
-
 	^ promotion
+]
+
+{ #category : #accessing }
+AMParsingBugExample >> promotion: anObject [
+
+	promotion := anObject
 ]
 
 { #category : #running }
@@ -69,6 +86,17 @@ AMParsingBugExample >> readPromotion: promotion [
 
 { #category : #initialization }
 AMParsingBugExample >> students [
+	^students
+]
+
+{ #category : #accessing }
+AMParsingBugExample >> students: anObject [
+
+	students := anObject
+]
+
+{ #category : #initialization }
+AMParsingBugExample >> studentsList [
 	^'Nath -
 Adèle +
 William -
@@ -93,7 +121,7 @@ Isaac-Guillaume +
 Élisabeth +
 Guy -
 Charles -
-Raymond-Tristan 
+Raymond-Tristan +
 Inès-Hélène +
 Jean +
 Alex +
@@ -102,18 +130,13 @@ Jules -
 Dorothée +
 Alexandria +
 Jacques -
-Adèle + 
+Adèle +
 Catherine -'
 ]
 
 { #category : #running }
 AMParsingBugExample >> testStudentPrinting [
 
-	| group promotion students |
-	group := AMGroup new.
-	promotion := self createPromotion.
-	students := promotion students.
-	instrumenter value: students value: group.
 	self readPromotion: promotion.
 	students do: [ :s |
 		| str |

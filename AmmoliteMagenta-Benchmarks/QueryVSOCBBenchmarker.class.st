@@ -25,7 +25,8 @@ Class {
 		'ttqTimesAllVarsWriteUncached',
 		'ttqTimesMethodCallUncached',
 		'objectOfInterest',
-		'result'
+		'result',
+		'instrumentationTime'
 	],
 	#category : #'AmmoliteMagenta-Benchmarks'
 }
@@ -71,7 +72,6 @@ QueryVSOCBBenchmarker >> benchmark [
 
 	self benchmarkOCBMethodCall.
 
-
 	self benchmarkTTQOneVarRead.
 
 	self benchmarkTTQOneVarWrite.
@@ -98,66 +98,113 @@ QueryVSOCBBenchmarker >> benchmarkNormalTimes [
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsRead [
 
 	30 timesRepeat: [
+		| student |
+		MetaLink uninstallAll.
+		student := AMStudent new.
+		instrumentationTime := [ student haltOnRead ] timeToRunWithoutGC.
+		MetaLink uninstallAll.
+		
 		ocbTimesAllVarsRead add:
-			[
-			self exampleCodeinstrumenter: [ :students :group | students first haltOnRead  ] ]
-				timeToRunWithoutGC ]
+			(self exampleCodeinstrumenter: [ :students :group |
+				 students first haltOnRead ]) timeToRunWithoutGC
+			- instrumentationTime ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsReadWrite [
 
 	30 timesRepeat: [
-		ocbTimesAllVarsReadWrite add: [
-			self exampleCodeinstrumenter: [ :students :group |
-				students first haltOnAccess ] ] timeToRunWithoutGC ]
+		| student |
+		MetaLink uninstallAll.
+		student := AMStudent new.
+		instrumentationTime := [ student haltOnAccess ] timeToRunWithoutGC.
+		MetaLink uninstallAll.
+		
+		ocbTimesAllVarsReadWrite add:
+			(self exampleCodeinstrumenter: [ :students :group |
+				 students first haltOnAccess ]) timeToRunWithoutGC - instrumentationTime  ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsWrite [
 
-
 	30 timesRepeat: [
-		ocbTimesAllVarsWrite add: [
-			self exampleCodeinstrumenter: [ :students :group |
-				students first haltOnWrite ] ] timeToRunWithoutGC]
+		| student |
+		MetaLink uninstallAll.
+		student := AMStudent new.
+		instrumentationTime := [ student haltOnWrite ] timeToRunWithoutGC.
+		MetaLink uninstallAll.
+
+		ocbTimesAllVarsWrite add:
+			(self exampleCodeinstrumenter: [ :students :group |
+				 students first haltOnWrite ]) timeToRunWithoutGC
+			- instrumentationTime ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBMethodCall [
 
 	30 timesRepeat: [
-		ocbTimesMethodCall add: [
-			self exampleCodeinstrumenter: [ :students :group |
-				group haltOnCallTo: #textPrintStudent:on: ] ] timeToRunWithoutGC ]
+		| gr |
+		MetaLink uninstallAll.
+		gr := AMGroup new.
+		instrumentationTime := [ gr haltOnCallTo: #textPrintStudent:on: ]
+			                       timeToRunWithoutGC.
+		MetaLink uninstallAll.
+
+		ocbTimesMethodCall add:
+			(self exampleCodeinstrumenter: [ :students :group |
+				 group haltOnCallTo: #textPrintStudent:on: ]) timeToRunWithoutGC
+			- instrumentationTime ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 
 	30 timesRepeat: [
-		ocbTimesOneVarRead add: [
-			self exampleCodeinstrumenter: [ :students :group |
-				students first haltOnReadTo: #marker ] ] timeToRunWithoutGC ]
+		| student |
+		MetaLink uninstallAll.
+		student := AMStudent new.
+		instrumentationTime := [ student haltOnReadTo: #marker ] timeToRunWithoutGC.
+		MetaLink uninstallAll.
+		ocbTimesOneVarRead add:
+			(self exampleCodeinstrumenter: [ :students :group |
+				 students first haltOnReadTo: #marker ]) timeToRunWithoutGC
+			- instrumentationTime ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarReadWrite [
 
-
 	30 timesRepeat: [
-		ocbTimesOneVarReadWrite add: 	 [
-			self exampleCodeinstrumenter: [ :students :group |
-				students first haltOnAccessTo: #marker. ] ] timeToRunWithoutGC]
+		| student |
+		MetaLink uninstallAll.
+		student := AMStudent new.
+		instrumentationTime := [ student haltOnAccessTo: #marker ]
+			                       timeToRunWithoutGC.
+		MetaLink uninstallAll.
+
+		ocbTimesOneVarReadWrite add:
+			(self exampleCodeinstrumenter: [ :students :group |
+				 students first haltOnAccessTo: #marker ]) timeToRunWithoutGC
+			- instrumentationTime ]
 ]
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarWrite [
 
 	30 timesRepeat: [
-		ocbTimesOneVarWrite add: [
-			self exampleCodeinstrumenter: [ :students :group |
-				students first haltOnWriteTo: #marker ] ] timeToRunWithoutGC ]
+		| student |
+		MetaLink uninstallAll.
+		student := AMStudent new.
+		instrumentationTime := [ student haltOnWriteTo: #marker ]
+			                       timeToRunWithoutGC.
+		MetaLink uninstallAll.
+
+		ocbTimesOneVarWrite add:
+			(self exampleCodeinstrumenter: [ :students :group |
+				 students first haltOnWriteTo: #marker ]) timeToRunWithoutGC
+			- instrumentationTime ]
 ]
 
 { #category : #benchmarking }
@@ -325,16 +372,17 @@ QueryVSOCBBenchmarker >> computeBenchmarkResult [
 ]
 
 { #category : #'as yet unclassified' }
-QueryVSOCBBenchmarker >> exampleCodeinstrumenter: anObject [
+QueryVSOCBBenchmarker >> exampleCodeinstrumenter: aBlock [
 
 	^ [
-	  100 timesRepeat: [
-		  [ 
-		  AMParsingBugExample new
-			  instrumenter: anObject;
-			  testStudentPrinting ]
-			  on: TestFailure
-			  do: [ "Transcript traceCr: thisContext stack" ] ] ]
+	  | object |
+	  object := AMParsingBugExample new.
+	  object
+		  createGroup;
+		  createPromotion.
+
+	  aBlock value: object students value: object group.
+	  100 timesRepeat: [ object testStudentPrinting ] ]
 ]
 
 { #category : #initialization }

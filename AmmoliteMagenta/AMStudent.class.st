@@ -7,7 +7,8 @@ Class {
 	#instVars : [
 		'name',
 		'marker',
-		'isPresent'
+		'isPresent',
+		'data'
 	],
 	#category : #'AmmoliteMagenta-model'
 }
@@ -57,6 +58,18 @@ AMStudent >> = anObject [
 	self == anObject ifTrue: [ ^ true ].
 	self class = anObject class ifFalse: [ ^ false ].
 	^ name = anObject name and: [ marker = anObject marker ]
+]
+
+{ #category : #accessing }
+AMStudent >> data [
+
+	^ data
+]
+
+{ #category : #accessing }
+AMStudent >> data: anObject [
+
+	data := anObject
 ]
 
 { #category : #comparing }
