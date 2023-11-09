@@ -8,7 +8,7 @@ A small app to divide geology students in homogeneous groups.
 ```Smalltalk
 Metacello new
 		baseline: 'AmmoliteMagenta';
-		repository: 'github://StevenCostiou/AmmoliteMagenta:failing-test-example';
+		repository: 'github://adri09070/AmmoliteMagenta:failing-test-example';
 		load
 ```
 
@@ -19,4 +19,13 @@ Metacello new
     baseline: 'Seeker';
     repository: 'github://ValentinBourcier/SeekerDebugger:new-object-centric-ttqs';
     load.
+```
+
+To load NeoCSV:
+
+```Smalltalk
+Metacello new
+  repository: 'github://svenvc/NeoCSV/repository';
+  baseline: 'NeoCSV';
+  load.
 ```
