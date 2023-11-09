@@ -9,12 +9,11 @@ BaselineOfAmmoliteMagenta >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [
-		spec package: 'AmmoliteMagenta'.
-		spec package: 'AmmoliteMagenta-Tests' ].
-	spec for: #benchmarks do: [
 		spec baseline: 'Seeker' with: [
 			spec repository:
 				'github://ValentinBourcier/SeekerDebugger/new-object-centric-ttqs' ].
+			
+		spec baseline: 'NeoCSV' with: [spec repository: 'github://svenvc/NeoCSV/repository'].
 
 		spec package: 'AmmoliteMagenta'.
 		spec
@@ -23,5 +22,5 @@ BaselineOfAmmoliteMagenta >> baseline: spec [
 		spec
 			package: 'AmmoliteMagenta-Benchmarks'
 			with: [ spec requires: #( 'AmmoliteMagenta-Tests'
-			   'Seeker' ) ] ]
+			   'Seeker' 'NeoCSV' ) ] ]
 ]
