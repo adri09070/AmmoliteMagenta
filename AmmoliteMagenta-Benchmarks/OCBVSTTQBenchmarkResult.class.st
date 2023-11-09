@@ -50,9 +50,13 @@ OCBVSTTQBenchmarkResult >> computeResultIn: aDictionary withName: aString withTi
 	aDictionary
 		at: 'label' put: aString;
 		at: 'times' put: aCollectionOfTimes;
-		at: 'average' put: aCollectionOfTimes average;
-		at: 'confidenceInterval'
-		put: 1.96 * aCollectionOfTimes stdev / aCollectionOfTimes size sqrt
+		at: 'average' put: (aCollectionOfTimes
+				 ifEmpty: [ 0 ]
+				 ifNotEmpty: [ aCollectionOfTimes average ]);
+		at: 'confidenceInterval' put: (aCollectionOfTimes
+				 ifEmpty: [ 0 ]
+				 ifNotEmpty: [
+					 1.96 * aCollectionOfTimes stdev / aCollectionOfTimes size sqrt ])
 ]
 
 { #category : #'as yet unclassified' }
