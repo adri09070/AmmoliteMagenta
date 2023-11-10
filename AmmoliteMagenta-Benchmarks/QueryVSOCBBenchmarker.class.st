@@ -26,7 +26,8 @@ Class {
 		'ttqTimesMethodCallUncached',
 		'objectOfInterest',
 		'result',
-		'instrumentationTime'
+		'instrumentationTime',
+		'object'
 	],
 	#category : #'AmmoliteMagenta-Benchmarks'
 }
@@ -102,147 +103,68 @@ QueryVSOCBBenchmarker >> benchmark [
 
 { #category : #benchmarking }
 QueryVSOCBBenchmarker >> benchmarkNormalTimes [
-
-	30 timesRepeat: [
-		normalTimes add:
-			(self exampleCodeinstrumenter: [ :students :group |  ])
-				timeToRunWithoutGC ]
+	self setupBase.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsRead [
 
-	30 timesRepeat: [
-		| student |
-		MetaLink uninstallAll.
-		student := AMStudent new.
-		instrumentationTime := [ student haltOnRead ] timeToRunWithoutGC.
-		MetaLink uninstallAll.
-		
-		ocbTimesAllVarsRead add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 students first haltOnRead ]) timeToRunWithoutGC
-			- instrumentationTime ]
+	self setupOCBAllVarsRead.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsReadWrite [
 
-	30 timesRepeat: [
-		| student |
-		MetaLink uninstallAll.
-		student := AMStudent new.
-		instrumentationTime := [ student haltOnAccess ] timeToRunWithoutGC.
-		MetaLink uninstallAll.
-		
-		ocbTimesAllVarsReadWrite add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 students first haltOnAccess ]) timeToRunWithoutGC - instrumentationTime  ]
+	self setupOCBAllVarsReadWrite.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBAllVarsWrite [
 
-	30 timesRepeat: [
-		| student |
-		MetaLink uninstallAll.
-		student := AMStudent new.
-		instrumentationTime := [ student haltOnWrite ] timeToRunWithoutGC.
-		MetaLink uninstallAll.
-
-		ocbTimesAllVarsWrite add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 students first haltOnWrite ]) timeToRunWithoutGC
-			- instrumentationTime ]
+	self setupOCBAllVarsWrite. 
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBMethodCall [
 
-	30 timesRepeat: [
-		| gr |
-		MetaLink uninstallAll.
-		gr := AMGroup new.
-		instrumentationTime := [ gr haltOnCallTo: #textPrintStudent:on: ]
-			                       timeToRunWithoutGC.
-		MetaLink uninstallAll.
-
-		ocbTimesMethodCall add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 group haltOnCallTo: #textPrintStudent:on: ]) timeToRunWithoutGC
-			- instrumentationTime ]
+	self setupOCBMethodCall.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarRead [
 
-	30 timesRepeat: [
-		| student |
-		MetaLink uninstallAll.
-		student := AMStudent new.
-		instrumentationTime := [ student haltOnReadTo: #marker ] timeToRunWithoutGC.
-		MetaLink uninstallAll.
-		ocbTimesOneVarRead add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 students first haltOnReadTo: #marker ]) timeToRunWithoutGC
-			- instrumentationTime ]
+	self setupOCBOneVarRead.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarReadWrite [
 
-	30 timesRepeat: [
-		| student |
-		MetaLink uninstallAll.
-		student := AMStudent new.
-		instrumentationTime := [ student haltOnAccessTo: #marker ]
-			                       timeToRunWithoutGC.
-		MetaLink uninstallAll.
-
-		ocbTimesOneVarReadWrite add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 students first haltOnAccessTo: #marker ]) timeToRunWithoutGC
-			- instrumentationTime ]
+	self setupOCBOneVarReadWrite.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-OCB' }
 QueryVSOCBBenchmarker >> benchmarkOCBOneVarWrite [
 
-	30 timesRepeat: [
-		| student |
-		MetaLink uninstallAll.
-		student := AMStudent new.
-		instrumentationTime := [ student haltOnWriteTo: #marker ]
-			                       timeToRunWithoutGC.
-		MetaLink uninstallAll.
-
-		ocbTimesOneVarWrite add:
-			(self exampleCodeinstrumenter: [ :students :group |
-				 students first haltOnWriteTo: #marker ]) timeToRunWithoutGC
-			- instrumentationTime ]
+	self setupOCBOneVarWrite.
+	self ocbench
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-TTOCB' }
 QueryVSOCBBenchmarker >> benchmarkTTQAllVarsRead [
 
 	self newSeekerDebugger.
-
-	30 timesRepeat: [
-		querySolver
-			query: (TTQAllAccessesToInstanceVariablesOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid);
-			resolve.
-		ttqTimesAllVarsRead add: querySolver timeToRun ].
-
-	30 timesRepeat: [
-		self newSeekerDebugger.
-		querySolver
-			query: (TTQAllAccessesToInstanceVariablesOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid);
-			resolve.
-		ttqTimesAllVarsReadUncached add: querySolver timeToRun ]
+	querySolver
+		query: (TTQAllAccessesToInstanceVariablesOfObject
+				 queryFrom: seekerDebugger programStates
+				 withObjectOid: oid);
+		resolve
 ]
 
 { #category : #benchmarking }
@@ -260,112 +182,52 @@ QueryVSOCBBenchmarker >> benchmarkTTQAllVarsReadWrite [
 	"		ttqTimesAllVarsWrite add: querySolver timeToRun ]."
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-TTOCB' }
 QueryVSOCBBenchmarker >> benchmarkTTQAllVarsWrite [
 
 	self newSeekerDebugger.
-
-	30 timesRepeat: [
-		querySolver
-			query: (TTQAllAssignmentsOfInstanceVariablesOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid);
-			resolve.
-		ttqTimesAllVarsWrite add: querySolver timeToRun ].
-
-	30 timesRepeat: [
-		self newSeekerDebugger.
-		querySolver
-			query: (TTQAllAssignmentsOfInstanceVariablesOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid);
-			resolve.
-		ttqTimesAllVarsWriteUncached add: querySolver timeToRun ]
+	querySolver
+		query: (TTQAllAssignmentsOfInstanceVariablesOfObject
+				 queryFrom: seekerDebugger programStates
+				 withObjectOid: oid);
+		resolve
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-TTOCB' }
 QueryVSOCBBenchmarker >> benchmarkTTQMethodCall [
 
-	self newSeekerDebugger.
-	oid := seekerDebugger tracer getOidOf: (seekerDebugger
-			        evaluateExpression: 'group'
-			        inContext:
-			        seekerDebugger currentContext sender sender sender sender
-				        home).
+	self newSeekerDebuggerWithGroupOID.
 
-	30 timesRepeat: [
-		querySolver
-			query: (TTQAllMessagesSentToObjectWithSelector
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid
-					 andMessageSelector: #textPrintOn:);
-			resolve.
-		ttqTimesMethodCall add: querySolver timeToRun ].
-
-	30 timesRepeat: [
-		self newSeekerDebugger.
-		oid := seekerDebugger tracer getOidOf: (seekerDebugger
-				        evaluateExpression: 'group'
-				        inContext:
-				        seekerDebugger currentContext sender sender sender sender
-					        home).
-		querySolver
-			query: (TTQAllMessagesSentToObjectWithSelector
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid
-					 andMessageSelector: #textPrintOn:);
-			resolve.
-		ttqTimesMethodCallUncached add: querySolver timeToRun ]
+	querySolver
+		query: (TTQAllMessagesSentToObjectWithSelector
+				 queryFrom: seekerDebugger programStates
+				 withObjectOid: oid
+				 andMessageSelector: #textPrintOn:);
+		resolve
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-TTOCB' }
 QueryVSOCBBenchmarker >> benchmarkTTQOneVarRead [
 
 	self newSeekerDebugger.
-
-	30 timesRepeat: [
-		querySolver
-			query: (TTQAllAccessesToAnInstanceVariablesOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid
-					 withVariableName: #marker);
-			resolve.
-		ttqTimesOneVarRead add: querySolver timeToRun ].
-
-	30 timesRepeat: [
-		self newSeekerDebugger.
-		querySolver
-			query: (TTQAllAccessesToAnInstanceVariablesOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid
-					 withVariableName: #marker);
-			resolve.
-		ttqTimesOneVarReadUncached add: querySolver timeToRun ]
+	querySolver
+		query: (TTQAllAccessesToAnInstanceVariablesOfObject
+				 queryFrom: seekerDebugger programStates
+				 withObjectOid: oid
+				 withVariableName: #marker);
+		resolve
 ]
 
-{ #category : #benchmarking }
+{ #category : #'benchmarks-TTOCB' }
 QueryVSOCBBenchmarker >> benchmarkTTQOneVarWrite [
 
 	self newSeekerDebugger.
-
-	30 timesRepeat: [
-		querySolver
-			query: (TTQAllAssignmentsOfAnInstanceVariableOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid
-					 withVariableName: #marker);
-			resolve.
-		ttqTimesOneVarWrite add: querySolver timeToRun ].
-
-	30 timesRepeat: [
-		self newSeekerDebugger.
-		querySolver
-			query: (TTQAllAssignmentsOfAnInstanceVariableOfObject
-					 queryFrom: seekerDebugger programStates
-					 withObjectOid: oid
-					 withVariableName: #marker);
-			resolve.
-		ttqTimesOneVarWriteUncached add: querySolver timeToRun ]
+	querySolver
+		query: (TTQAllAssignmentsOfAnInstanceVariableOfObject
+				 queryFrom: seekerDebugger programStates
+				 withObjectOid: oid
+				 withVariableName: #marker);
+		resolve
 ]
 
 { #category : #'as yet unclassified' }
@@ -412,40 +274,14 @@ QueryVSOCBBenchmarker >> exampleCodeinstrumenter: aBlock [
 		  createPromotion.
 
 	  aBlock value: object students value: object group.
-	  100 timesRepeat: [ object testStudentPrinting ] ]
+	  1000 timesRepeat: [ object testStudentPrinting ] ]
 ]
 
 { #category : #initialization }
 QueryVSOCBBenchmarker >> initialize [
 
 	super initialize.
-	seekerDebugger := SeekerDebugger headlessDebugBlock:
-		                  (self exampleCodeinstrumenter: [ :students :group |
-			                    ]).
-
 	querySolver := QSCollection new.
-
-	normalTimes := {  } asOrderedCollection.
-
-	ttqTimesOneVarRead := {  } asOrderedCollection.
-	ttqTimesOneVarWrite := {  } asOrderedCollection.
-	ttqTimesAllVarsRead := {  } asOrderedCollection.
-	ttqTimesAllVarsWrite := {  } asOrderedCollection.
-	ttqTimesMethodCall := {  } asOrderedCollection.
-
-	ocbTimesOneVarRead := {  } asOrderedCollection.
-	ocbTimesOneVarWrite := {  } asOrderedCollection.
-	ocbTimesOneVarReadWrite := {  } asOrderedCollection.
-	ocbTimesAllVarsRead := {  } asOrderedCollection.
-	ocbTimesAllVarsWrite := {  } asOrderedCollection.
-	ocbTimesAllVarsReadWrite := {  } asOrderedCollection.
-	ocbTimesMethodCall := {  } asOrderedCollection.
-
-	ttqTimesOneVarReadUncached := {  } asOrderedCollection.
-	ttqTimesOneVarWriteUncached := {  } asOrderedCollection.
-	ttqTimesAllVarsReadUncached := {  } asOrderedCollection.
-	ttqTimesAllVarsWriteUncached := {  } asOrderedCollection.
-	ttqTimesMethodCallUncached := {  } asOrderedCollection
 ]
 
 { #category : #'as yet unclassified' }
@@ -462,20 +298,36 @@ QueryVSOCBBenchmarker >> mapSuite: aString from: allResults to: aCollectionOfTim
 		aCollectionOfTimes add: (dict at: 3) asNumber "(dict at: 1)" "(dict at: 'time')" ]
 ]
 
-{ #category : #'instance creation' }
+{ #category : #'benchmarks-TTOCB' }
 QueryVSOCBBenchmarker >> newSeekerDebugger [
 
 	seekerDebugger := (SeekerDebugger headlessDebugBlock:
-			                   (self exampleCodeinstrumenter: [ :students :group |
-					                     ]))
+			                   self seekerExecutionBlock)
 		                  runReversibly;
 		                  yourself.
 
 	oid := seekerDebugger tracer getOidOf: (seekerDebugger
-			        evaluateExpression: 'students first'
-			        inContext:
-			        seekerDebugger currentContext sender sender sender sender
-				        home)
+			        evaluateExpression: 'object students first'
+			        inContext: thisContext)
+]
+
+{ #category : #'benchmarks-TTOCB' }
+QueryVSOCBBenchmarker >> newSeekerDebuggerWithGroupOID [
+
+	seekerDebugger := (SeekerDebugger headlessDebugBlock:
+			                   self seekerExecutionBlock)
+		                  runReversibly;
+		                  yourself.
+
+	oid := seekerDebugger tracer getOidOf: (seekerDebugger
+			        evaluateExpression: 'object group'
+			        inContext: thisContext)
+]
+
+{ #category : #benchmarking }
+QueryVSOCBBenchmarker >> ocbench [
+
+	10 timesRepeat: [ object testStudentPrinting ]
 ]
 
 { #category : #parsing }
@@ -509,6 +361,65 @@ QueryVSOCBBenchmarker >> parseResults: aFileName [
 	self mapAllResultsToTimes: allResults.
 
 	self computeBenchmarkResult
+]
+
+{ #category : #'benchmarks-TTOCB' }
+QueryVSOCBBenchmarker >> seekerExecutionBlock [
+
+	^ [
+	  self setupBase.
+	  self ocbench ]
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupBase [
+
+	object := AMParsingBugExample new.
+	object
+		createGroup;
+		createPromotion
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBAllVarsRead [
+	self setupBase.
+	object students first haltOnRead
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBAllVarsReadWrite [
+	self setupBase.
+	object students first haltOnAccess
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBAllVarsWrite [
+	self setupBase.
+	object students first haltOnWrite
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBMethodCall [
+	self setupBase.
+	object group haltOnCallTo: #textPrintStudent:on:
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBOneVarRead [
+	self setupBase.
+	object students first haltOnReadTo: #marker
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBOneVarReadWrite [
+	self setupBase.
+	object students first haltOnAccessTo: #marker
+]
+
+{ #category : #'setup-OCB' }
+QueryVSOCBBenchmarker >> setupOCBOneVarWrite [
+	self setupBase.
+	object students first haltOnWriteTo: #marker
 ]
 
 { #category : #'instance creation' }
