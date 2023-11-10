@@ -27,7 +27,8 @@ Class {
 		'objectOfInterest',
 		'result',
 		'instrumentationTime',
-		'object'
+		'object',
+		'ttqTimesAllVarsReadWrite'
 	],
 	#category : #'AmmoliteMagenta-Benchmarks'
 }
@@ -46,6 +47,20 @@ QueryVSOCBBenchmarker class >> benchmarkTTQAllVarsReadWrite [
 
 	<script>
 	self new benchmarkTTQAllVarsReadWrite
+]
+
+{ #category : #benchmarking }
+QueryVSOCBBenchmarker class >> benchmarkTTQOneVarRead [
+
+	<script>
+	self new benchmarkTTQOneVarRead
+]
+
+{ #category : #benchmarking }
+QueryVSOCBBenchmarker class >> benchmarkTTQOneVarReadWrite [
+
+	<script>
+	self new benchmarkTTQOneVarReadWrite
 ]
 
 { #category : #parsing }
@@ -95,6 +110,8 @@ QueryVSOCBBenchmarker >> benchmark [
 	self benchmarkTTQAllVarsRead.
 
 	self benchmarkTTQAllVarsWrite.
+
+	self benchmarkTTQAllVarsReadWrite.
 
 	self benchmarkTTQMethodCall.
 
@@ -171,15 +188,11 @@ QueryVSOCBBenchmarker >> benchmarkTTQAllVarsRead [
 QueryVSOCBBenchmarker >> benchmarkTTQAllVarsReadWrite [
 
 	self newSeekerDebugger.
-
-	"30 timesRepeat: ["
-	querySolver
+	(querySolver
 		query: (TTQAllReadingsAndWritingsToInstanceVariablesOfObject
 				 queryFrom: seekerDebugger programStates
 				 withObjectOid: oid);
-		resolve;
-		inspect
-	"		ttqTimesAllVarsWrite add: querySolver timeToRun ]."
+		") inspect"resolve) inspect
 ]
 
 { #category : #'benchmarks-TTOCB' }
@@ -210,12 +223,24 @@ QueryVSOCBBenchmarker >> benchmarkTTQMethodCall [
 QueryVSOCBBenchmarker >> benchmarkTTQOneVarRead [
 
 	self newSeekerDebugger.
-	querySolver
-		query: (TTQAllAccessesToAnInstanceVariablesOfObject
-				 queryFrom: seekerDebugger programStates
-				 withObjectOid: oid
-				 withVariableName: #marker);
-		resolve
+	(querySolver
+		 query: (TTQAllAccessesToAnInstanceVariablesOfObject
+				  queryFrom: seekerDebugger programStates
+				  withObjectOid: oid
+				  withVariableName: #marker);
+		 resolve) inspect
+]
+
+{ #category : #benchmarking }
+QueryVSOCBBenchmarker >> benchmarkTTQOneVarReadWrite [
+
+	self newSeekerDebugger.
+	(querySolver
+		 query: (TTQAllReadingsAndWritingsToAnInstanceVariableOfObject
+				  queryFrom: seekerDebugger programStates
+				  withObjectOid: oid
+				  withVariableName: #marker);
+		 ") inspect"resolve) inspect
 ]
 
 { #category : #'benchmarks-TTOCB' }
@@ -287,7 +312,17 @@ QueryVSOCBBenchmarker >> initialize [
 { #category : #'as yet unclassified' }
 QueryVSOCBBenchmarker >> mapAllResultsToTimes: allResults [
 
-	{ 'Pharo' -> normalTimes. 'OC-AllVarReadWrite' -> ocbTimesAllVarsReadWrite . 'OC-OneVarWrite' -> ocbTimesOneVarWrite . 'OC-OneVarReadWrite' -> ocbTimesOneVarReadWrite . 'OC-AllVarReads' -> ocbTimesAllVarsRead . 'OC-OneVarRead' -> ocbTimesOneVarRead . 'OC-MethodCall' -> ocbTimesMethodCall . 'OC-AllVarWrites' -> ocbTimesAllVarsWrite  ". 'TTQ-OneVarWrite' -> ttqTimesOneVarWrite. 'TTQ-AllVarReads' -> ttqTimesAllVarsRead. 'TTQ-OneVarRead' -> ttqTimesOneVarRead . 'TTQ-MethodCall' -> ttqTimesMethodCall . 'TTQ-AllVarWrites' -> ttqTimesAllVarsWrite"   } asDictionary associationsDo:  [ :assoc | self mapSuite: assoc key from: allResults to: assoc value ].
+	{
+		('Pharo' -> normalTimes).
+		('OC-AllVarReadWrite' -> ocbTimesAllVarsReadWrite).
+		('OC-OneVarWrite' -> ocbTimesOneVarWrite).
+		('OC-OneVarReadWrite' -> ocbTimesOneVarReadWrite).
+		('OC-AllVarReads' -> ocbTimesAllVarsRead).
+		('OC-OneVarRead' -> ocbTimesOneVarRead).
+		('OC-MethodCall' -> ocbTimesMethodCall).
+		('OC-AllVarWrites' -> ocbTimesAllVarsWrite) ". 'TTQ-OneVarWrite' -> ttqTimesOneVarWrite. 'TTQ-AllVarReads' -> ttqTimesAllVarsRead. 'TTQ-OneVarRead' -> ttqTimesOneVarRead . 'TTQ-MethodCall' -> ttqTimesMethodCall . 'TTQ-AllVarWrites' -> ttqTimesAllVarsWrite . TTQ-AllVarReadsWrites -> ttqTimesAllVarsReadWrite " }
+		asDictionary associationsDo: [ :assoc |
+		self mapSuite: assoc key from: allResults to: assoc value ]
 ]
 
 { #category : #'as yet unclassified' }
