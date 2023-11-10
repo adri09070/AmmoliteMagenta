@@ -40,6 +40,13 @@ QueryVSOCBBenchmarker class >> benchmark [
 		inspect
 ]
 
+{ #category : #benchmarking }
+QueryVSOCBBenchmarker class >> benchmarkTTQAllVarsReadWrite [
+
+	<script>
+	self new benchmarkTTQAllVarsReadWrite
+]
+
 { #category : #parsing }
 QueryVSOCBBenchmarker class >> parseResults: aFileName [
 
@@ -236,6 +243,21 @@ QueryVSOCBBenchmarker >> benchmarkTTQAllVarsRead [
 					 withObjectOid: oid);
 			resolve.
 		ttqTimesAllVarsReadUncached add: querySolver timeToRun ]
+]
+
+{ #category : #benchmarking }
+QueryVSOCBBenchmarker >> benchmarkTTQAllVarsReadWrite [
+
+	self newSeekerDebugger.
+
+	"30 timesRepeat: ["
+	querySolver
+		query: (TTQAllReadingsAndWritingsToInstanceVariablesOfObject
+				 queryFrom: seekerDebugger programStates
+				 withObjectOid: oid);
+		resolve;
+		inspect
+	"		ttqTimesAllVarsWrite add: querySolver timeToRun ]."
 ]
 
 { #category : #benchmarking }
