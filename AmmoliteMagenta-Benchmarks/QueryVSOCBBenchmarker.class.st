@@ -26,8 +26,7 @@ Class {
 		'ttqTimesMethodCallUncached',
 		'objectOfInterest',
 		'result',
-		'instrumentationTime',
-		'object'
+		'instrumentationTime'
 	],
 	#category : #'AmmoliteMagenta-Benchmarks'
 }
@@ -39,6 +38,14 @@ QueryVSOCBBenchmarker class >> benchmark [
 	self new
 		benchmark;
 		inspect
+]
+
+{ #category : #parsing }
+QueryVSOCBBenchmarker class >> parseResults: aFileName [
+
+	^ self new
+		  parseResults: aFileName;
+		  inspect
 ]
 
 { #category : #adding }
@@ -352,6 +359,20 @@ QueryVSOCBBenchmarker >> initialize [
 	ttqTimesMethodCallUncached := {  } asOrderedCollection
 ]
 
+{ #category : #'as yet unclassified' }
+QueryVSOCBBenchmarker >> mapAllResultsToTimes: allResults [
+
+	{ 'Pharo' -> normalTimes. 'OC-AllVarReadWrite' -> ocbTimesAllVarsReadWrite . 'OC-OneVarWrite' -> ocbTimesOneVarWrite . 'OC-OneVarReadWrite' -> ocbTimesOneVarReadWrite . 'OC-AllVarReads' -> ocbTimesAllVarsRead . 'OC-OneVarRead' -> ocbTimesOneVarRead . 'OC-MethodCall' -> ocbTimesMethodCall . 'OC-AllVarWrites' -> ocbTimesAllVarsWrite  ". 'TTQ-OneVarWrite' -> ttqTimesOneVarWrite. 'TTQ-AllVarReads' -> ttqTimesAllVarsRead. 'TTQ-OneVarRead' -> ttqTimesOneVarRead . 'TTQ-MethodCall' -> ttqTimesMethodCall . 'TTQ-AllVarWrites' -> ttqTimesAllVarsWrite"   } asDictionary associationsDo:  [ :assoc | self mapSuite: assoc key from: allResults to: assoc value ].
+]
+
+{ #category : #'as yet unclassified' }
+QueryVSOCBBenchmarker >> mapSuite: aString from: allResults to: aCollectionOfTimes [
+
+	(allResults select: [ :dict | "(dict at: 'suite')" "(dict at: 3) "
+		 (dict at: 8) = aString ]) do: [ :dict |
+		aCollectionOfTimes add: (dict at: 3) asNumber "(dict at: 1)" "(dict at: 'time')" ]
+]
+
 { #category : #'instance creation' }
 QueryVSOCBBenchmarker >> newSeekerDebugger [
 
@@ -372,6 +393,39 @@ QueryVSOCBBenchmarker >> newSeekerDebugger [
 QueryVSOCBBenchmarker >> ocbench [
 
 	10 timesRepeat: [ object testStudentPrinting ]
+]
+
+{ #category : #parsing }
+QueryVSOCBBenchmarker >> parseResults: aFileName [
+
+	| csvFile readStream csvReader allResults |
+	csvFile := aFileName asFileReference.
+	csvFile isFile ifFalse: [ ^ self ].
+	readStream := csvFile readStream.
+	csvReader := NeoCSVReader on: readStream.
+
+	csvReader
+		separator: Character tab";
+		addIgnoredFields: 2;
+		""addFieldAt: 'time';""addFieldAt: 1;
+		addIgnoredField;
+		""addFieldAt: 'criterion';""addFieldAt: 2;
+		addIgnoredFields: 2;
+		""addFieldAt: 'suite';""addFieldAt: 3;
+		addIgnoredFields: 5."
+
+	.csvReader
+		skipLine;
+		skipLine;
+		skipLine;
+		skipLine.
+	allResults := csvReader upToEnd.
+
+	allResults := allResults select: [ :dict | " (dict at: 'criterion')"
+		              "(dict at: 2)" (dict at: 5)  = 'total' ].
+	self mapAllResultsToTimes: allResults.
+
+	self computeBenchmarkResult
 ]
 
 { #category : #'setup-OCB' }
