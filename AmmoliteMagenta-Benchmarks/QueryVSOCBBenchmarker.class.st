@@ -28,7 +28,8 @@ Class {
 		'result',
 		'instrumentationTime',
 		'object',
-		'ttqTimesAllVarsReadWrite'
+		'ttqTimesAllVarsReadWrite',
+		'ttqTimesOneVarReadWrite'
 	],
 	#category : #'AmmoliteMagenta-Benchmarks'
 }
@@ -188,11 +189,11 @@ QueryVSOCBBenchmarker >> benchmarkTTQAllVarsRead [
 QueryVSOCBBenchmarker >> benchmarkTTQAllVarsReadWrite [
 
 	self newSeekerDebugger.
-	(querySolver
+	querySolver
 		query: (TTQAllReadingsAndWritingsToInstanceVariablesOfObject
 				 queryFrom: seekerDebugger programStates
 				 withObjectOid: oid);
-		") inspect"resolve) inspect
+		resolve
 ]
 
 { #category : #'benchmarks-TTOCB' }
@@ -235,12 +236,11 @@ QueryVSOCBBenchmarker >> benchmarkTTQOneVarRead [
 QueryVSOCBBenchmarker >> benchmarkTTQOneVarReadWrite [
 
 	self newSeekerDebugger.
-	(querySolver
-		 query: (TTQAllReadingsAndWritingsToAnInstanceVariableOfObject
-				  queryFrom: seekerDebugger programStates
-				  withObjectOid: oid
-				  withVariableName: #marker);
-		 ") inspect"resolve) inspect
+	querySolver query:
+		(TTQAllReadingsAndWritingsToAnInstanceVariableOfObject
+			 queryFrom: seekerDebugger programStates
+			 withObjectOid: oid
+			 withVariableName: #marker)
 ]
 
 { #category : #'benchmarks-TTOCB' }
@@ -320,7 +320,7 @@ QueryVSOCBBenchmarker >> mapAllResultsToTimes: allResults [
 		('OC-AllVarReads' -> ocbTimesAllVarsRead).
 		('OC-OneVarRead' -> ocbTimesOneVarRead).
 		('OC-MethodCall' -> ocbTimesMethodCall).
-		('OC-AllVarWrites' -> ocbTimesAllVarsWrite) ". 'TTQ-OneVarWrite' -> ttqTimesOneVarWrite. 'TTQ-AllVarReads' -> ttqTimesAllVarsRead. 'TTQ-OneVarRead' -> ttqTimesOneVarRead . 'TTQ-MethodCall' -> ttqTimesMethodCall . 'TTQ-AllVarWrites' -> ttqTimesAllVarsWrite . TTQ-AllVarReadsWrites -> ttqTimesAllVarsReadWrite " }
+		('OC-AllVarWrites' -> ocbTimesAllVarsWrite) ". 'TTQ-OneVarWrite' -> ttqTimesOneVarWrite. 'TTQ-AllVarReads' -> ttqTimesAllVarsRead. 'TTQ-OneVarRead' -> ttqTimesOneVarRead . 'TTQ-MethodCall' -> ttqTimesMethodCall . 'TTQ-AllVarWrites' -> ttqTimesAllVarsWrite . TTQ-AllVarReadsWrites -> ttqTimesAllVarsReadWrite. TTQ-OneVarReadsWrites ->  ttqTimesOneVarReadWrite"  }
 		asDictionary associationsDo: [ :assoc |
 		self mapSuite: assoc key from: allResults to: assoc value ]
 ]
