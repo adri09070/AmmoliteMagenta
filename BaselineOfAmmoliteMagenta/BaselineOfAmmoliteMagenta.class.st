@@ -11,7 +11,7 @@ BaselineOfAmmoliteMagenta >> baseline: spec [
 	spec for: #common do: [
 		spec baseline: 'Seeker' with: [
 			spec repository:
-				'github://ValentinBourcier/SeekerDebugger/new-object-centric-ttqs' ].
+				'github://ValentinBourcier/SeekerDebugger:new-object-centric-ttqs' ].
 			
 		spec baseline: 'NeoCSV' with: [spec repository: 'github://svenvc/NeoCSV/repository'].
 
